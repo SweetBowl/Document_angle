@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable, List, Union
 import numpy as np
 
 __all__ = ['Iterator', 'Selector', 'Switch', 'Mux']
@@ -21,7 +21,7 @@ class Iterator(object):
 class Selector(object):
     def __init__(self,
                  transforms: List[Callable],
-                 weights: List[int, float] = None) -> None:
+                 weights: List[Union[int, float]] = None) -> None:
         super().__init__()
         self.transforms = transforms
 
@@ -38,7 +38,7 @@ class Selector(object):
         p = np.array(self.weights) / sum(self.weights)
         index = np.random.choice(len(self.transforms), replace=False, p=p)
         output_data = self.transforms[index](input_data)
-        return output_data
+        return output_data, index
 
 
 class Switch(object):
@@ -48,9 +48,9 @@ class Switch(object):
         self.p = max(0, min(1, p))
 
     def __call__(self, input_data):
-        output_data = self.transform(
-            input_data) if np.random.rand() < self.p else input_data
-        return output_data
+        output_data, flag = self.transform(input_data), True if np.random.rand(
+        ) < self.p else input_data, False
+        return output_data, flag
 
 
 class Mux(object):
