@@ -1,21 +1,19 @@
-from typing import Sequence, TypeVar, Union, Dict
 import torch
 import torch.nn as nn
 
 __all__ = ['get_device', 'to_device']
 
-T = TypeVar('T', torch.Tensor, torch.nn.Module)
 
-
-def get_device(data: T) -> torch.device:
+def get_device(data):
     '''
     Get the device of data.
-    T: torch.Tensor|torch.nn.Module
+
+    Type `T`: torch.Tensor|torch.nn.Module
 
     Args:
-        data: data which you want to know its device.
-    Return:
-        torch.device
+        data(T): Data which you want to know its device.
+    Returns:
+        (torch.device): The device which data is in.
     '''
     if isinstance(data, torch.Tensor):
         return data.device
@@ -28,22 +26,22 @@ def get_device(data: T) -> torch.device:
         keys = [para_dict.keys()]
         return para_dict[keys[0]].device
     else:
-        msg = 'data should be torch.Tensorensor or torch.nn.Module, your input is {}'.format(
+        msg = 'data should be torch.Tensor or torch.nn.Module, but got {}'.format(
             type(data))
-        raise ValueError(msg)
+        raise TypeError(msg)
 
 
-def to_device(data: Union[Sequence[T], Dict[str, T], T],
-              device: torch.device) -> Union[Sequence[T], Dict[str, T], T]:
+def to_device(data, device):
     '''
     Move data to specific device.
-    T: torch.Tensor|torch.nn.Moudle
+
+    Type `T`: Union[torch.Tensor, torch.nn.Moudle]
 
     Args:
-        data: data which will be move to device.
-        device: the target device of data.
-    Return:
-        type is the same as data. but data's device is device.
+        data(Union[Sequence[T], Dict[str, T], T]): The data which will be moved to device. It can be dict or sequence.
+        device(torch.device): The target device of data.
+    Returns:
+        (Union[Sequence[T], Dict[str, T], T]): Structure is the same as data. but it is moved to specific device.
     '''
     if isinstance(data, (list, tuple)):
         return [d.to(device) for d in data]
