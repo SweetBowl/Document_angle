@@ -140,6 +140,8 @@ class ImageStep():
             #         if i % 4 == 0:
             #             index += 1
             #     '''
+        elif kwargs['dataset'] == 'bank_train':
+            self.train_loader = bank_loader['train']
 
 
     def get_error(self, pre, lbl):
@@ -163,7 +165,7 @@ class ImageStep():
 
         i=0
 
-        for data in self.test_loader:
+        for data in self.train_loader:
             images = data['image']
             images = images.view([-1,3,1600,1600])
             rotated_flags = data['rotate_flag']
@@ -229,7 +231,7 @@ def main():
     trainer = ImageStep(args)
     trainer.load_models()
 
-    trainer.load_data(dataset='bank_test')
+    trainer.load_data(dataset='bank_train')
     trainer.train_DNN()
     # print(torch.cuda.is_available())
     # print(torch.cuda.device_count())

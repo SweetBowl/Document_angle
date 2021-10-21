@@ -53,23 +53,30 @@ class ImageTrainTransform(AbstractTransform):
         self.resize = ScaleResize(fixed_size=fixed_size,
                                   fill_value=(255, 255, 255))
         self.to_tensor = transforms.ToTensor()
-        rotate_fn = [
-            lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
-            lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
-        ]
-        self.rotate = Selector(transforms=rotate_fn)
-        self.small_angle_rotate = transforms.RandomRotation(degrees=5)
+        # rotate_fn = [
+        #     lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
+        #     lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
+        # ]
+        # self.rotate = Selector(transforms=rotate_fn)
+        self.small_angle_rotate = transforms.RandomRotation(degrees=3)
         self.colorjitter = transforms.ColorJitter(0.1, 0.1, 0.1, 0.1)
 
     def __call__(self, input_dict: Dict[str, Any]) -> Dict[str, Any]:
         transformed_dict = {}
         image = input_dict['image']
         image = self.resize(image)
-        image, rotate_flag = self.rotate(image)
-        image = self.small_angle_rotate(image)
         image = self.to_tensor(image)
-        # [3,1600,1600]
-        transformed_dict['image'] = image
-        rotate_flag = torch.LongTensor([rotate_flag])
+        image = self.small_angle_rotate(image)
+        rotated_imgs = [
+            F.rotate(image, 0), F.rotate(image, 90), F.rotate(image, 180), F.rotate(image, 270)
+        ]
+        rotated_imgs = torch.stack(rotated_imgs,dim=0)
+        # image, rotate_flag = self.rotate(image)
+
+        rotate_flag = torch.LongTensor([0,1,2,3])
+        transformed_dict['image'] = rotated_imgs
         transformed_dict['rotate_flag'] = rotate_flag
         return transformed_dict
+
+# 3 channels to 1 channel?
+# change size to 1400?

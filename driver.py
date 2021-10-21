@@ -29,6 +29,7 @@ for data in bank_loader['train']:
     # (64,4,3,1600,1600)
 
     images = images.view([-1,3,1600,1600])
+    print(images.shape)
     # (256,3,1600,1600)
 
     # print(images.shape)
@@ -39,13 +40,16 @@ for data in bank_loader['train']:
     rotate_flags = rotate_flags.view([-1,1])
     # (256,1)
 
-    # for image, rotate_flag in zip(images, rotate_flags):
-    #     pil_image = F.to_pil_image(image)
-    #     pil_image.save('/home/std2022/zhaoxu/Document_angle/test1/' + str(index) +
-    #                    '_{}'.format(rotate_flag.item()) + '.jpg')
-    #
-    #     # print('index_{}_flag{}'.format(index,rotate_flag.item()))
-    #     i += 1
-    #     if i % 4 == 0:
-    #         index += 1
-    #
+    for image, rotate_flag in zip(images, rotate_flags):
+        pil_image = F.to_pil_image(image)
+        pil_image.save('/home/std2022/zhaoxu/Document_angle/train1/' + str(index) +
+                       '_{}'.format(rotate_flag.item()) + '.jpg')
+
+        # print('index_{}_flag{}'.format(index,rotate_flag.item()))
+        # i += 1
+        # if i % 4 == 0:
+        #     index += 1
+        #
+        # if i > 100:
+        #     break
+
