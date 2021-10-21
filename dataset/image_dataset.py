@@ -2,7 +2,8 @@ from os import path
 from .abstract_dataset import *
 from PIL import Image
 import pandas as pd
-from transform import ImageTrainTransform, ImageTestTransform
+from transform.image_transform import ImageTrainTransform
+from transform.image_transform import ImageTestTransform
 
 __all__ = [
     'Bank_Train', 'Bank_Val', 'Bank_Test', 'Doc_Train', 'Doc_Val', 'Doc_Test'
@@ -15,7 +16,8 @@ class ImageDataset(AbstractDataset):
                  transform=None,
                  batch_size=1,
                  shuffle=False,
-                 num_workers=1) -> None:
+                 num_workers=1,
+                 prefetch_factor=2) -> None:
         super().__init__(data_frame,
                          transform=transform,
                          batch_size=batch_size,
@@ -62,7 +64,7 @@ def Bank_Test(cfg):
         data_frame=data_frame,
         transform=ImageTestTransform(fixed_size=cfg.IMAGE_SIZE),
         shuffle=False,
-        batch_size=cfg.BATCH_SIZE,
+        batch_size=cfg.BATCH_SIZE//4,
         num_workers=cfg.NUM_WORKERS,
         prefetch_factor=cfg.PREFETCH_FACTOR)
 

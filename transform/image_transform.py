@@ -14,6 +14,7 @@ class ImageTestTransform(AbstractTransform):
         self.resize = ScaleResize(fixed_size=fixed_size,
                                   fill_value=(255, 255, 255))
         self.to_tensor = transforms.ToTensor()
+        self.fixed_size = fixed_size
 
     def __call__(self, input_dict: Dict[str, Any]) -> Dict[str, Any]:
         transformed_dict = {}
@@ -29,7 +30,17 @@ class ImageTestTransform(AbstractTransform):
         ]
 
         rotated_imgs = torch.stack(rotated_imgs, dim=0)
+        # print("imgs shape \n")
+        # print(rotated_imgs.shape)
+        # [4,3,1600,1600]
+        # rotated_imgs = rotated_imgs.view([-1,3,self.fixed_size,self.fixed_size])
+
+        # [3,1600,1600]
+
         rotate_flags = torch.LongTensor([0,1,2,3])
+        # [4,1]
+        # return [1,3,1600]...
+        # rotate_flags = rotate_flags.view([-1,1])
 
         transformed_dict['image'] = rotated_imgs
 
@@ -57,6 +68,7 @@ class ImageTrainTransform(AbstractTransform):
         image, rotate_flag = self.rotate(image)
         image = self.small_angle_rotate(image)
         image = self.to_tensor(image)
+        # [3,1600,1600]
         transformed_dict['image'] = image
         rotate_flag = torch.LongTensor([rotate_flag])
         transformed_dict['rotate_flag'] = rotate_flag

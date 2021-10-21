@@ -10,8 +10,8 @@ class TrainConfig(AbstractConfig):
         self.data_config()
 
     def data_config(self):
-        self.BATCH_SIZE = 64
-        self.NUM_WORKERS = 8
+        self.BATCH_SIZE = 4
+        self.NUM_WORKERS = 6
 
     def model_config(self):
         self.IMAGE_SIZE = (1600, 1600)

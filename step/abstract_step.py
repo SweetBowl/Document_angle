@@ -7,9 +7,9 @@ class AbstractStep(ABC):
         super().__init__()
 
     @abstractclassmethod
-    def load_data(self) -> dict(torch.utils.data.DataLoader):
+    def load_data(self) :
         '''
-        Load dataset.
+        Load dataset. -> dict(torch.utils.data.DataLoader)
         '''
         raise NotImplementedError(
             'load_data should be implemented by subclass.')
