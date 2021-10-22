@@ -15,11 +15,13 @@ class ImageTestTransform(AbstractTransform):
                                   fill_value=(255, 255, 255))
         self.to_tensor = transforms.ToTensor()
         self.fixed_size = fixed_size
+        self.gray_scale = transforms.Grayscale(1)
 
     def __call__(self, input_dict: Dict[str, Any]) -> Dict[str, Any]:
         transformed_dict = {}
         image = input_dict['image']
         image = self.resize(image)
+        image = self.gray_scale(image)
 
         # return the 4 rotated copies of the image and the flag of the rotation
         # i.e. 0 for 0 degrees, 1 for 90 degrees, 2 for 180 degrees, 3 for 270 degrees
@@ -58,15 +60,18 @@ class ImageTrainTransform(AbstractTransform):
         #     lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
         # ]
         # self.rotate = Selector(transforms=rotate_fn)
-        self.small_angle_rotate = transforms.RandomRotation(degrees=3)
+        self.gray_scale = transforms.Grayscale(1)
+        self.small_angle_rotate = transforms.RandomRotation(degrees=2)
         self.colorjitter = transforms.ColorJitter(0.1, 0.1, 0.1, 0.1)
 
     def __call__(self, input_dict: Dict[str, Any]) -> Dict[str, Any]:
         transformed_dict = {}
         image = input_dict['image']
         image = self.resize(image)
-        image = self.to_tensor(image)
+        image = self.colorjitter(image)
+        image = self.gray_scale(image)
         image = self.small_angle_rotate(image)
+        image = self.to_tensor(image)
         rotated_imgs = [
             F.rotate(image, 0), F.rotate(image, 90), F.rotate(image, 180), F.rotate(image, 270)
         ]
@@ -78,5 +83,3 @@ class ImageTrainTransform(AbstractTransform):
         transformed_dict['rotate_flag'] = rotate_flag
         return transformed_dict
 
-# 3 channels to 1 channel?
-# change size to 1400?

@@ -22,34 +22,75 @@ print("hello")
 index = 0
 i = 0
 
-for data in bank_loader['train']:
+# bank & document [train]
 
+# for data in bank_loader['train']:
+#
+#     images = data['image']
+#     # print(images.shape)
+#     # (64,4,3,1600,1600)
+#     print(images.shape)
+#
+#     images = images.view([-1,1,1400,1400])
+#     print(images.shape)
+#     # (256,3,1600,1600)
+#
+#     # print(images.shape)
+#     # （64,3,1600,1600)
+#
+#     rotate_flags = data['rotate_flag']
+#     # (64,4): [[0,1,2,3],[0,1,2,3],...]
+#     rotate_flags = rotate_flags.view([-1,1])
+#     # (256,1)
+#
+#     for image, rotate_flag in zip(images, rotate_flags):
+#         if i > 100:
+#             break
+#         # pil_image = F.to_pil_image(image)
+#         # pil_image.save('/home/std2022/zhaoxu/Document_angle/train_imgs/train2/' + str(index) +
+#         #                '_{}'.format(rotate_flag.item()) + '.jpg')
+#
+#         print('index_{}_flag{}'.format(index,rotate_flag.item()))
+#         i += 1
+#         if i % 4 == 0:
+#             index += 1
+
+    # print("Good {}".format(i))
+
+# for data in doc_loader['train']:
+    # print(data)
+
+#     images = data['image']
+#     print(images.shape)
+#     # (64,4,3,1600,1600)
+#     print(images.shape)
+#
+#     images = images.view([-1, 1, 1400, 1400])
+#     print(images.shape)
+#     # (256,3,1600,1600)
+#
+#     # print(images.shape)
+#     # （64,3,1600,1600)
+#
+#     rotate_flags = data['rotate_flag']
+#     # (64,4): [[0,1,2,3],[0,1,2,3],...]
+#     rotate_flags = rotate_flags.view([-1, 1])
+#     # (256,1)
+#
+#     for image, rotate_flag in zip(images, rotate_flags):
+#         if i > 100:
+#             break
+#         pil_image = F.to_pil_image(image)
+#         pil_image.save('/home/std2022/zhaoxu/Document_angle/train_imgs/doc_train1/' + str(index) +
+#                        '_{}'.format(rotate_flag.item()) + '.jpg')
+#
+#         print('index_{}_flag{}'.format(index, rotate_flag.item()))
+#         i += 1
+#         if i % 4 == 0:
+#             index += 1
+#
+#     # print("Good {}".format(i))
+#
+for data in enumerate(zip(bank_loader['train'],doc_loader['train'])):
     images = data['image']
-    # print(images.shape)
-    # (64,4,3,1600,1600)
-
-    images = images.view([-1,3,1600,1600])
-    print(images.shape)
-    # (256,3,1600,1600)
-
-    # print(images.shape)
-    # （64,3,1600,1600)
-
-    rotate_flags = data['rotate_flag']
-    # (64,4): [[0,1,2,3],[0,1,2,3],...]
-    rotate_flags = rotate_flags.view([-1,1])
-    # (256,1)
-
-    for image, rotate_flag in zip(images, rotate_flags):
-        pil_image = F.to_pil_image(image)
-        pil_image.save('/home/std2022/zhaoxu/Document_angle/train1/' + str(index) +
-                       '_{}'.format(rotate_flag.item()) + '.jpg')
-
-        # print('index_{}_flag{}'.format(index,rotate_flag.item()))
-        # i += 1
-        # if i % 4 == 0:
-        #     index += 1
-        #
-        # if i > 100:
-        #     break
-
+    print(images)
