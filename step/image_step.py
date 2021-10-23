@@ -8,6 +8,7 @@ import torch.backends.cudnn as cudnn
 import config.train_config
 import dataset.image_dataset
 import utils.util_data
+from itertools import cycle
 import argparse
 
 # import torch.distributed as dist
@@ -36,6 +37,10 @@ class ImageStep():
         super().__init__()
         self.path = {}
         self.path['root'] = '/home/std2022/zhaoxu/'
+        self.path['result_path'] = os.path.join(self.path['root'],args.result_path)
+        if not os.path.exists(self.path['result_path']):
+            os.makedirs(self.path['result_path'])
+
         # self.config=args.config
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         self.num_class = args.num_class
@@ -46,6 +51,7 @@ class ImageStep():
         self.epoch_num = args.epoch_num
         self.momentum = args.momentum
         self.weight_decay = args.weight_decay
+        self.save_hparam(args)
 
     def load_models(self):
         if self.model_name == 'resnet50':
@@ -81,36 +87,11 @@ class ImageStep():
         # print("hello")
 
         # demo
-        if kwargs['dataset'] == 'bank_train':
-            self.train_loader = bank_loader['train']
-            self.test_loader = bank_loader['test']
-            # index = 0
-            # i = 0
-            #
-            # for data in bank_loader['test']:
-            #     images = data['image']
-            #     # (64,4,3,1600,1600)
-            #     images = images.view([-1, 3, 1600, 1600])
-            #     # (256,3,1600,1600)
-            #
-            #     # print(images.shape)
-            #
-            #     rotate_flags = data['rotate_flag']
-            #     # (64,4): [[0,1,2,3],[0,1,2,3],...]
-            #     rotate_flags = rotate_flags.view([-1, 1])
-            #     # (256,1)
-            #
-            #     '''
-            #     for image, rotate_flag in zip(images, rotate_flags):
-            #         pil_image = F.to_pil_image(image)
-            #         pil_image.save('/home/std2022/zhaoxu/Document_angle/test1/' + str(index) +
-            #                        '_{}'.format(rotate_flag.item()) + '.jpg')
-            #
-            #         # print('index_{}_flag{}'.format(index,rotate_flag.item()))
-            #         i += 1
-            #         if i % 4 == 0:
-            #             index += 1
-            #     '''
+        if kwargs['dataset'] == 'train':
+            self.train_loader_bank = bank_loader['train']
+            self.test_loader_bank = bank_loader['test']
+            self.train_loader_doc = doc_loader['train']
+            self.test_loader_doc = doc_loader['test']
         # elif kwargs['dataset'] == 'bank_train':
         #     self.train_loader = bank_loader['train']
 
@@ -126,7 +107,7 @@ class ImageStep():
         self.model = self.model.to(self.device)
         if torch.cuda.device_count() > 1:
             print("Let's use", torch.cuda.device_count(), "GPUs!")
-            self.model = nn.DataParallel(self.model,device_ids=[0,1])
+            self.model = nn.DataParallel(self.model,device_ids=[0,1,2,3])
 
         torch.autograd.set_detect_anomaly(True)
 
@@ -135,12 +116,22 @@ class ImageStep():
 
         i = 0
 
-        for data in self.train_loader:
-            images = data['image']
-            images = images.view([-1, 1, 1400, 1400])
-            rotated_flags = data['rotate_flag']
-            rotated_flags = rotated_flags.view([-1, 1])
-            rotated_flags = rotated_flags.squeeze()
+        for _,(bank_data,doc_data) in enumerate(zip(cycle(self.train_loader_bank),self.train_loader_doc)):
+            #
+            bank_images = bank_data['image']
+            bank_images = bank_images.view([-1, 1, 1300, 1300])
+            doc_images = doc_data['image']
+            doc_images = doc_images.view([-1,1,1300,1300])
+            images = torch.concat((bank_images,doc_images),0)
+            # print(images.shape)
+            # break
+            bank_flags = bank_data['rotate_flag']
+            bank_flags = bank_flags.view([-1, 1])
+            bank_flags = bank_flags.squeeze()
+            doc_flags = doc_data['rotate_flag']
+            doc_flags = doc_flags.view([-1,1])
+            doc_flags = doc_flags.squeeze()
+            rotated_flags = torch.concat((bank_flags,doc_flags),0)
 
             images = images.float()
             images = images.to(self.device)
@@ -187,9 +178,9 @@ class ImageStep():
 
         Loss, Error = 0, 0
         i = 0
-        for data in self.test_loader:
+        for data in self.test_loader_bank:
             images = data['image']
-            images = images.view([-1, 1, 1400, 1400])
+            images = images.view([-1, 1, 1300, 1300])
             rotated_flags = data['rotate_flag']
             rotated_flags = rotated_flags.view([-1, 1])
             rotated_flags = rotated_flags.squeeze()
@@ -218,22 +209,31 @@ class ImageStep():
                     param_group['lr'] = logspace_lr[epoch]
             self.train_DNN()
             self.testDNN()
-            if epoch % 10 == 9 or epoch == self.epoch_num - 1:
-                print("epoch: %d\n" % epoch)
+            print("epoch: %d\n" % epoch)
         # save model
+        self.save_model()
+
+    def save_model(self):
+        torch.save(self.path['result_path'],'resnet34.pkl')
 
         # save param
-
+    def save_hparam(self,args):
+        save_path = os.path.join(self.path['result_path'],'hparam.txt')
+        with open(save_path,'w') as fp:
+            args_dict = args.__dict__
+            for key in args_dict:
+                fp.write("{} : {}\n".format(key,args_dict[key]))
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_class', default=4, type=int)
     parser.add_argument('---model_name', default='resnet34', type=str)
+    parser.add_argument('--result_path',default='Document_angle/result/models/')
     parser.add_argument('--opt', default='sgd', type=str)
     parser.add_argument('--lr', default=0.0001, type=float)
     parser.add_argument('--logspace', default=1, type=float)
     parser.add_argument('--start_epoch', default=0, type=int)
-    parser.add_argument('--epoch_num', default=50, type=int)
+    parser.add_argument('--epoch_num', default=10, type=int)
     parser.add_argument('--momentum', default=0.9, type=float)
     parser.add_argument('--weight_decay', default=1e-4, type=float)
     # parser.add_argument('--device',default='0,1,2',type=str)
@@ -242,15 +242,17 @@ def main():
     # os.environ['CUDA_VISIBLE_DEVICES'] = args.device
     # print(args)
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
     # os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
     trainer = ImageStep(args)
     trainer.load_models()
 
-    trainer.load_data(dataset='bank_train')
-    trainer.train_DNN()
-    trainer.testDNN()
+    trainer.load_data(dataset='train')
+    # trainer.train_DNN()
+    # trainer.testDNN()
+    trainer.work(args)
+    trainer.save_hparam(args)
 
     # print(torch.cuda.is_available())
     # print(torch.cuda.device_count())
@@ -282,6 +284,9 @@ loss: 1.281 error: 0.575
 batch_size: 4
 image_size: 1600*1600
 loss: 1.353 error:0.541
+
+image_size: 1300*1300
+[train] batch: 1591, loss: 0.942, error: 0.515
 
 batch_size: 8
 image_size: 1000*1000

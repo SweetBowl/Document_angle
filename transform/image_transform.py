@@ -17,7 +17,9 @@ class ImageTestTransform(AbstractTransform):
         self.fixed_size = fixed_size
         self.gray_scale = transforms.Grayscale(1)
 
-    def __call__(self, input_dict: Dict[str, Any]) -> Dict[str, Any]:
+    def __call__(self, input_dict: Dict[str, Any]):
+        # -> Dict[str, Any]
+
         transformed_dict = {}
         image = input_dict['image']
         image = self.resize(image)
@@ -47,6 +49,7 @@ class ImageTestTransform(AbstractTransform):
         transformed_dict['image'] = rotated_imgs
 
         transformed_dict['rotate_flag'] = rotate_flags
+        # return (rotated_imgs,rotate_flags)
         return transformed_dict
 
 class ImageTrainTransform(AbstractTransform):
@@ -81,5 +84,6 @@ class ImageTrainTransform(AbstractTransform):
         rotate_flag = torch.LongTensor([0,1,2,3])
         transformed_dict['image'] = rotated_imgs
         transformed_dict['rotate_flag'] = rotate_flag
+        # return image
         return transformed_dict
 

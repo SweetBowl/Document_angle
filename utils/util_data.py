@@ -1,7 +1,8 @@
+import torch
 import torch.utils.data as data
+import torchvision.transforms.functional as F
 
 __all__ = ['generate_data_loaders']
-
 
 def generate_data_loaders(datasets):
     '''

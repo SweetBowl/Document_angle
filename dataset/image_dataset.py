@@ -64,7 +64,7 @@ def Bank_Test(cfg):
         data_frame=data_frame,
         transform=ImageTestTransform(fixed_size=cfg.IMAGE_SIZE),
         shuffle=False,
-        batch_size=cfg.BATCH_SIZE//4,
+        batch_size=cfg.BATCH_SIZE,
         num_workers=cfg.NUM_WORKERS,
         prefetch_factor=cfg.PREFETCH_FACTOR)
 
