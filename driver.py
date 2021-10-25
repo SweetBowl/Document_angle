@@ -49,24 +49,26 @@ doc_loader_test = doc_loader['test']
 # k = 0
 # # bank & document [train]
 #
-
-for _, (bank_data,doc_data) in enumerate(zip(bank_loader_train,doc_loader_train)):
+image_size = cfg.IMAGE_SIZE[0]
+for i, (bank_data,doc_data) in enumerate(zip(bank_loader_train,doc_loader_train)):
     # print(type(data))
     # [8,4,1,1400,1400]
     bank_images = bank_data['image']
     doc_images = doc_data['image']
-    bank_images = bank_images.view([-1,1,1200,1200])
-    doc_images = doc_images.view([-1,1,1200,1200])
+    bank_images = bank_images.view([-1,1,image_size,image_size])
+    doc_images = doc_images.view([-1,1,image_size,image_size])
     print(bank_images.shape)
     print("hello\n")
-    print(doc_images.shape)
-    images = torch.concat((bank_images,doc_images),0)
-    print("good\n")
-    print(images.shape)
-    break
+    # print(doc_images.shape)
+    # images = torch.concat((bank_images,doc_images),0)
+    # print("good\n")
+    # print(images.shape)
+    # print(i)
+    if i >5:
+        break
 
     # print(bank_data['image'].shape)
-
+print(i)
 # concat
     # if k > 2:
     #     break
