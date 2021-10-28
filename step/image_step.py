@@ -64,9 +64,10 @@ class ImageStep():
         self.image_size = args.image_size
         self.batch_size = args.batch_size
         self.list = [[], [], [], [], []]
-        self.save_hparam(args)
         self.train_test = args.train_test
         self.device_ids = [0, 1, 2]
+        if self.train_test == 'train':
+            self.save_hparam(args)
 
     def model_zoo(self):
         if self.model_name == 'resnet50':
@@ -157,7 +158,6 @@ class ImageStep():
         torch.autograd.set_detect_anomaly(True)
 
         Loss, Error = 0, 0
-        # img_num = 0
 
         for i, (bank_data, doc_data) in enumerate(zip(cycle(self.train_loader_bank), self.train_loader_doc)):
             # 4*4*2
@@ -169,7 +169,7 @@ class ImageStep():
             # print(images.shape)
             # If batch_size == 4, the shape of input data is: [32,1,1300,1300],
             # where the  32 means 4 batch_size with 4 rotation angles --> 16
-            # band and doc data --> 16 * 2 == 32
+            # bank and doc data --> 16 * 2 == 32
             bank_flags = bank_data['rotate_flag']
             bank_flags = bank_flags.view([-1, 1])
             bank_flags = bank_flags.squeeze()
@@ -435,18 +435,18 @@ class ImageStep():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', default='/home/std2022/zhaoxu/')
-    parser.add_argument('--result-dir', default='disk/result/result2/')
-    parser.add_argument('--train-test', default='train', type=str)
-    parser.add_argument('--num-class', default=4, type=int)
-    parser.add_argument('--model-name', default='resnet34', type=str)
-    parser.add_argument('--opt', default='sgd', type=str)
-    parser.add_argument('--lr', default=0.001, type=float)  # 0.0001
-    parser.add_argument('--logspace', default=1, type=float)
-    parser.add_argument('--start-epoch', default=5, type=int)
-    parser.add_argument('--epoch-num', default=8, type=int)  # 3
-    parser.add_argument('--momentum', default=0.9, type=float)
-    parser.add_argument('--weight-decay', default=1e-4, type=float)
-    parser.add_argument('--image-size', default=cfg.IMAGE_SIZE[0], type=int)
+    parser.add_argument('--result-dir', default='disk/result/result3/')
+    parser.add_argument('--train-test', default='test', type=str, help='choose to train or test model')
+    parser.add_argument('--num-class', default=4, type=int, help='number of classes')
+    parser.add_argument('--model-name', default='resnet34', type=str, help='choose the model')
+    parser.add_argument('--opt', default='sgd', type=str, help='choose the optimizer')
+    parser.add_argument('--lr', default=0.0001, type=float, help='learning rate')  # 0.001
+    parser.add_argument('--logspace', default=1, type=float, help='adjust learning rate, refer to def work_train()')
+    parser.add_argument('--start-epoch', default=0, type=int, help='whether to train the model from scratch')
+    parser.add_argument('--epoch-num', default=5, type=int, help='epoch numbers')  # 3
+    parser.add_argument('--momentum', default=0.9, type=float, help='params of optimizer: momentum')
+    parser.add_argument('--weight-decay', default=1e-4, type=float, help='params of optimizer: weight decay')
+    parser.add_argument('--image-size', default=cfg.IMAGE_SIZE[0], type=int, help='change the image size(square)')
     parser.add_argument('--batch-size', default=cfg.BATCH_SIZE, type=int)
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--gpu-id', default='1,2,3', type=str)
@@ -461,7 +461,7 @@ def main():
 
     # "train" indicates training model, while "test" indicates test_DNN
     if args.train_test == 'train':
-        # start_epoch ==0, train the model from the scratch
+        # start_epoch ==0, train the model from scratch
         if args.start_epoch == 0:
             trainer.load_init_model()
             trainer.load_data(dataset='bank_doc_train')
@@ -474,7 +474,7 @@ def main():
     elif args.train_test == 'test':
         trainer.load_trained_model()
         trainer.load_data(dataset='bank_doc_train')
-        trainer.work_test_all()  # test DNN on all test dataset
+        trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
         # trainer.work_test_bank()  # test DNN on bank test dataset
 
 
