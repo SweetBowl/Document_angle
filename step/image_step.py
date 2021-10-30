@@ -10,6 +10,9 @@ import torchvision.models as models
 from torch import nn
 import torch.backends.cudnn as cudnn
 from collections import OrderedDict
+from PIL import Image
+from transform.basic_transform import ScaleResize
+from torchvision import transforms
 import config.train_config
 import dataset.image_dataset
 import utils.util_data
@@ -65,7 +68,7 @@ class ImageStep():
         self.batch_size = args.batch_size
         self.list = [[], [], [], [], []]
         self.train_test = args.train_test
-        self.device_ids = [0, 1, 2]
+        self.device_ids = [0,1,2]
         if self.train_test == 'train':
             self.save_hparam(args)
 
@@ -123,9 +126,26 @@ class ImageStep():
         load_path = self.path['result_path'] + self.model_name + '_model_G' + str(self.image_size) + '_' + str(
             self.epoch_num - 1) + '.pth'
         loaded_dict = torch.load(load_path)
+
         self.model = nn.DataParallel(self.model, device_ids=self.device_ids)
         self.model = self.model.to(self.device)
         self.model.load_state_dict(loaded_dict['model_state_dict'])
+        self.model.eval()
+
+    def model_one_GPU(self):
+        self.model_zoo()
+        load_path = self.path['result_path'] + self.model_name + '_model_G' + str(self.image_size) + '_' + str(
+            self.epoch_num - 1) + '.pth'
+        loaded_dict = torch.load(load_path)
+
+        # if not the DataParallel model
+        new_state_dict = OrderedDict()
+        for k, v in loaded_dict['model_state_dict'].items():
+            namekey = k[7:] if k.startswith('module.') else k
+            new_state_dict[namekey] = v
+        self.model.load_state_dict(new_state_dict)
+        self.model.eval()
+        self.model = self.model.to(self.device)
 
     def load_data(self, **kwargs):
         bank = {}
@@ -268,7 +288,7 @@ class ImageStep():
 
     # test DNN
     def work_test_all(self):
-        self.model.eval()
+        # self.model.eval()
         Error = 0
         with torch.no_grad():
             for i, (bank_data, doc_data) in enumerate(zip(cycle(self.test_loader_bank), self.test_loader_doc)):
@@ -307,7 +327,7 @@ class ImageStep():
             # break
 
     def work_test_bank(self):
-        self.model.eval()
+        # self.model.eval()
         Error = 0
         i = 0
         with torch.no_grad():
@@ -336,6 +356,30 @@ class ImageStep():
             test_error = self.list[4]
             print('Error on test_bank dataset: {}'.format(test_error[-1]))
             self.save_test_bank()
+
+    # test the infer time on one image
+    def test_one_image(self):
+        # self.model().eval()
+        image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
+        transform = transforms.Compose([
+            ScaleResize(fixed_size=cfg.IMAGE_SIZE,fill_value=(255, 255, 255)),
+            transforms.Grayscale(1),
+            transforms.ToTensor()
+        ])
+        image = transform(image)
+        image = torch.unsqueeze(image,0)
+        image = image.to(self.device)
+        print(image.shape)
+
+        tis = time.time()
+        output = self.model(image)
+        # pre = output.detach().max(1)[1]
+        time_expand = time.time() - tis
+
+        print("predict: {}".format(pre))
+        print("time used on one image: {}".format(time_expand))
+        #predict: tensor([0], device='cuda:0')
+        # time used on one image: 0.6052532196044922
 
     def draw_figures(self):
         x = np.arange(0, len(self.list[0]), 1)
@@ -443,7 +487,7 @@ def main():
     parser.add_argument('--lr', default=0.0001, type=float, help='learning rate')  # 0.001
     parser.add_argument('--logspace', default=1, type=float, help='adjust learning rate, refer to def work_train()')
     parser.add_argument('--start-epoch', default=0, type=int, help='whether to train the model from scratch')
-    parser.add_argument('--epoch-num', default=5, type=int, help='epoch numbers')  # 3
+    parser.add_argument('--epoch-num', default=6, type=int, help='epoch numbers')  # 3
     parser.add_argument('--momentum', default=0.9, type=float, help='params of optimizer: momentum')
     parser.add_argument('--weight-decay', default=1e-4, type=float, help='params of optimizer: weight decay')
     parser.add_argument('--image-size', default=cfg.IMAGE_SIZE[0], type=int, help='change the image size(square)')
@@ -472,14 +516,22 @@ def main():
             trainer.work_train(args)
 
     elif args.train_test == 'test':
-        trainer.load_trained_model()
-        trainer.load_data(dataset='bank_doc_train')
-        trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
+        # Test the model on all dataset
+        # trainer.load_trained_model()
+        # trainer.load_data(dataset='bank_doc_train')
+        # trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
         # trainer.work_test_bank()  # test DNN on bank test dataset
+
+        # Test the model on one image
+        trainer.model_one_GPU()
+        trainer.test_one_image()
 
 
 if __name__ == '__main__':
     main()
+
+# module....
+# model.eval()位置
 
 '''
 ResNet50

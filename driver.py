@@ -2,7 +2,10 @@ import config.train_config
 import dataset.image_dataset
 import utils
 import torch
+from torchvision import transforms
 from torchvision.transforms import functional as F
+from transform.basic_transform import ScaleResize, Selector
+from PIL import Image
 
 cfg = config.train_config.TrainConfig()
 
@@ -49,6 +52,7 @@ doc_loader_test = doc_loader['test']
 # k = 0
 # # bank & document [train]
 #
+'''
 image_size = cfg.IMAGE_SIZE[0]
 for i, (bank_data,doc_data) in enumerate(zip(bank_loader_train,doc_loader_train)):
     # print(type(data))
@@ -69,53 +73,81 @@ for i, (bank_data,doc_data) in enumerate(zip(bank_loader_train,doc_loader_train)
 
     # print(bank_data['image'].shape)
 print(i)
+'''
+
+# load one image
+# /home/std2022/zhaoxu/disk/Bank/Images/0047.jpg
+#        item_dict['image'] = Image.open(item_dict['image_path']).convert('RGB')
+#         data = self.transform(item_dict)
+# image = input_dict['image']
+# image = self.resize(image)
+# image = self.gray_scale(image)
+#
+# # return the 4 rotated copies of the image and the flag of the rotation
+# # i.e. 0 for 0 degrees, 1 for 90 degrees, 2 for 180 degrees, 3 for 270 degrees
+# image = self.to_tensor(image)
+
+image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
+transform = transforms.Compose([
+    ScaleResize(fixed_size=cfg.IMAGE_SIZE,
+                fill_value=(255, 255, 255)),
+    transforms.Grayscale(1),
+    transforms.ToTensor()
+])
+
+image = transform(image)
+image = torch.unsqueeze(image, 0)
+print(image.shape)
+# [1, 1, 1000, 1000]
+# image = F.to_pil_image(image)
+
 # concat
-    # if k > 2:
-    #     break
-    #
-    # for image in data:
-    #     # print(images.shape)
-    #     if i > 20:
-    #         break
-    #     # pil_image = F.to_pil_image(image)
-    #     # pil_image.save('/home/std2022/zhaoxu/Document_angle/train_imgs/bank_train1/train3/' + str(k) +
-    #     #                '_{}'.format(i) + '.jpg')
-    #     # print(i)
-    #     # index += 1
-    #     i += 1
-    #
-    # k += 1
+# if k > 2:
+#     break
+#
+# for image in data:
+#     # print(images.shape)
+#     if i > 20:
+#         break
+#     # pil_image = F.to_pil_image(image)
+#     # pil_image.save('/home/std2022/zhaoxu/Document_angle/train_imgs/bank_train1/train3/' + str(k) +
+#     #                '_{}'.format(i) + '.jpg')
+#     # print(i)
+#     # index += 1
+#     i += 1
+#
+# k += 1
 
-    # images = data['image']
-    # # print(images.shape)
-    # # (64,4,3,1600,1600)
-    # print(images.shape)
-    #
-    # images = images.view([-1,1,1400,1400])
-    # print(images.shape)
-    # # (256,3,1600,1600)
-    #
-    # # print(images.shape)
-    # # （64,3,1600,1600)
-    #
-    # rotate_flags = data['rotate_flag']
-    # # (64,4): [[0,1,2,3],[0,1,2,3],...]
-    # rotate_flags = rotate_flags.view([-1,1])
-    # # (256,1)
+# images = data['image']
+# # print(images.shape)
+# # (64,4,3,1600,1600)
+# print(images.shape)
+#
+# images = images.view([-1,1,1400,1400])
+# print(images.shape)
+# # (256,3,1600,1600)
+#
+# # print(images.shape)
+# # （64,3,1600,1600)
+#
+# rotate_flags = data['rotate_flag']
+# # (64,4): [[0,1,2,3],[0,1,2,3],...]
+# rotate_flags = rotate_flags.view([-1,1])
+# # (256,1)
 
-    # for image, rotate_flag in zip(images, rotate_flags):
-    #     if i > 100:
-    #         break
-    #     # pil_image = F.to_pil_image(image)
-    #     # pil_image.save('/home/std2022/zhaoxu/Document_angle/train_imgs/train2/' + str(index) +
-    #     #                '_{}'.format(rotate_flag.item()) + '.jpg')
-    #
-    #     print('index_{}_flag{}'.format(index,rotate_flag.item()))
-    #     i += 1
-    #     if i % 4 == 0:
-    #         index += 1
-    #
-    # print("Good {}".format(i))
+# for image, rotate_flag in zip(images, rotate_flags):
+#     if i > 100:
+#         break
+#     # pil_image = F.to_pil_image(image)
+#     # pil_image.save('/home/std2022/zhaoxu/Document_angle/train_imgs/train2/' + str(index) +
+#     #                '_{}'.format(rotate_flag.item()) + '.jpg')
+#
+#     print('index_{}_flag{}'.format(index,rotate_flag.item()))
+#     i += 1
+#     if i % 4 == 0:
+#         index += 1
+#
+# print("Good {}".format(i))
 
 #
 # for data in doc_loader['train']:
@@ -150,10 +182,9 @@ print(i)
 #         if i % 4 == 0:
 #             index += 1
 
-    # print("Good {}".format(i))
+# print("Good {}".format(i))
 
 
 # for data in enumerate(zip(bank_loader['train'],doc_loader['train'])):
 #     images = data['image']
 #     print(images)
-
