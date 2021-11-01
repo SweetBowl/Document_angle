@@ -68,7 +68,7 @@ class ImageStep():
         self.batch_size = args.batch_size
         self.list = [[], [], [], [], []]
         self.train_test = args.train_test
-        self.device_ids = [0,1,2]
+        self.device_ids = [0, 1, 2]
         if self.train_test == 'train':
             self.save_hparam(args)
 
@@ -82,6 +82,9 @@ class ImageStep():
         elif self.model_name == 'resnet18':
             self.model = models.resnet18(pretrained=False, num_classes=self.num_class)
             self.model.conv1 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        elif self.model_name == 'densenet121':
+            self.model = models.densenet121(pretrained=False, num_classes=self.num_class)
+            self.model.features.conv0 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
 
     def load_init_model(self):
         self.model_zoo()
@@ -96,6 +99,7 @@ class ImageStep():
                                              weight_decay=self.weight_decay)
         else:
             self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+        # print(self.model)
 
     def load_latest_epoch(self):
         self.model_zoo()
@@ -129,6 +133,7 @@ class ImageStep():
 
         self.model = nn.DataParallel(self.model, device_ids=self.device_ids)
         self.model = self.model.to(self.device)
+        # print(loaded_dict['model_state_dict'])
         self.model.load_state_dict(loaded_dict['model_state_dict'])
         self.model.eval()
 
@@ -323,6 +328,8 @@ class ImageStep():
             self.list[3].append(Error / (i + 1))
             test_error = self.list[3]
             print('Error on test_all dataset: {}'.format(test_error[-1]))
+            correction = (1 - test_error[-1]) * 100
+            print('Correction on test_all dataset: {}%'.format(correction))
             self.save_test_all()
             # break
 
@@ -352,9 +359,11 @@ class ImageStep():
                     self.list[4].append(Error / (i + 1))
                 i += 1
 
-            self.list[4].append(Error / (i + 1))
+            self.list[4].append(Error / i)
             test_error = self.list[4]
             print('Error on test_bank dataset: {}'.format(test_error[-1]))
+            correction = (1 - test_error[-1]) * 100
+            print('Correction on test_bank dataset: {}%'.format(correction))
             self.save_test_bank()
 
     # test the infer time on one image
@@ -362,12 +371,12 @@ class ImageStep():
         # self.model().eval()
         image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
         transform = transforms.Compose([
-            ScaleResize(fixed_size=cfg.IMAGE_SIZE,fill_value=(255, 255, 255)),
+            ScaleResize(fixed_size=cfg.IMAGE_SIZE, fill_value=(255, 255, 255)),
             transforms.Grayscale(1),
             transforms.ToTensor()
         ])
         image = transform(image)
-        image = torch.unsqueeze(image,0)
+        image = torch.unsqueeze(image, 0)
         image = image.to(self.device)
         print(image.shape)
 
@@ -378,7 +387,7 @@ class ImageStep():
 
         print("predict: {}".format(pre))
         print("time used on one image: {}".format(time_expand))
-        #predict: tensor([0], device='cuda:0')
+        # predict: tensor([0], device='cuda:0')
         # time used on one image: 0.6052532196044922
 
     def draw_figures(self):
@@ -479,17 +488,17 @@ class ImageStep():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', default='/home/std2022/zhaoxu/')
-    parser.add_argument('--result-dir', default='disk/result/result3/')
+    parser.add_argument('--result-dir', default='disk/result/result8/')
     parser.add_argument('--train-test', default='test', type=str, help='choose to train or test model')
-    parser.add_argument('--num-class', default=4, type=int, help='number of classes')
-    parser.add_argument('--model-name', default='resnet34', type=str, help='choose the model')
-    parser.add_argument('--opt', default='sgd', type=str, help='choose the optimizer')
-    parser.add_argument('--lr', default=0.0001, type=float, help='learning rate')  # 0.001
+    parser.add_argument('--model-name', default='densenet121', type=str, help='select the model')
+    parser.add_argument('--start-epoch', default=5, type=int, help='whether to train the model from scratch')
+    parser.add_argument('--epoch-num', default=8, type=int, help='epoch numbers')  # 3
+    parser.add_argument('--opt', default='sgd', type=str, help='select the optimizer')
+    parser.add_argument('--lr', default=0.001, type=float, help='learning rate')  # 0.001
     parser.add_argument('--logspace', default=1, type=float, help='adjust learning rate, refer to def work_train()')
-    parser.add_argument('--start-epoch', default=0, type=int, help='whether to train the model from scratch')
-    parser.add_argument('--epoch-num', default=6, type=int, help='epoch numbers')  # 3
     parser.add_argument('--momentum', default=0.9, type=float, help='params of optimizer: momentum')
     parser.add_argument('--weight-decay', default=1e-4, type=float, help='params of optimizer: weight decay')
+    parser.add_argument('--num-class', default=4, type=int, help='number of classes')
     parser.add_argument('--image-size', default=cfg.IMAGE_SIZE[0], type=int, help='change the image size(square)')
     parser.add_argument('--batch-size', default=cfg.BATCH_SIZE, type=int)
     parser.add_argument('--seed', default=0, type=int)
@@ -517,20 +526,23 @@ def main():
 
     elif args.train_test == 'test':
         # Test the model on all dataset
-        # trainer.load_trained_model()
-        # trainer.load_data(dataset='bank_doc_train')
-        # trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
+        trainer.load_trained_model()
+        trainer.load_data(dataset='bank_doc_train')
+        trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
         # trainer.work_test_bank()  # test DNN on bank test dataset
 
-        # Test the model on one image
-        trainer.model_one_GPU()
-        trainer.test_one_image()
+    # Test the model on one image
+    # trainer.model_one_GPU()
+    # trainer.test_one_image()
 
 
 if __name__ == '__main__':
     main()
 
 # module....
+# OrderedDict([('conv1.weight', tensor([[[[ 0.1216,  0.0266, -0.1001,  ...,  0.0765, -0.0293, -0.1017],
+# Missing key(s) in state_dict: "module.conv1.weight"
+# Unexpected key(s) in state_dict: "conv1.weight"
 # model.eval()位置
 
 '''
@@ -568,4 +580,15 @@ loss: 1.366 error: 0.587
 batch_size: 8
 image_size: 1000*1000
 loss: 1.385 error 0.720
+'''
+
+'''
+ResNet50 --> worse than ResNet34
+DenseNet --> worse than Resnet
+--------------------------------
+Conclusion: simpler models can achieve better performance on this task.
+
+resize to 256*256 --> decrease the correction
+
+change to 3 channels
 '''

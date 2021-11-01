@@ -5,7 +5,7 @@
       <paths name="std2022@121.48.161.213:65006">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/pycharm_project_800/" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/std2022/zhaoxu/Document_angle" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

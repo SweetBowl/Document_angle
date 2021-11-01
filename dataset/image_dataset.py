@@ -96,7 +96,7 @@ def Doc_Val(cfg):
 
 
 def Doc_Test(cfg):
-    csv_path = path.join(path.dirname(__file__), '..', 'Data/Bank_Test.csv')
+    csv_path = path.join(path.dirname(__file__), '..', 'Data/Doc_Test.csv')
     data_frame = pd.read_csv(csv_path)
     return ImageDataset(
         data_frame=data_frame,

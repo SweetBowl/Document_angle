@@ -98,6 +98,14 @@ transform = transforms.Compose([
 image = transform(image)
 image = torch.unsqueeze(image, 0)
 print(image.shape)
+
+j = 0
+for i in range(5):
+    print(i)
+    j += 1
+
+print(j)
+
 # [1, 1, 1000, 1000]
 # image = F.to_pil_image(image)
 
