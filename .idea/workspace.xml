@@ -2,148 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fecbb649-a1d7-4f9a-893d-0d135d730536" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Bank_Train.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Bank_Train.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/train_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/train_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/image_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/image_dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/driver.py" beforeDir="false" afterPath="$PROJECT_DIR$/driver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/step/image_step.py" beforeDir="false" afterPath="$PROJECT_DIR$/step/image_step.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/100_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/101_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/102_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/103_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/104_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/105_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/106_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/107_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/108_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/109_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/10_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/110_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/111_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/112_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/113_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/114_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/115_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/116_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/117_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/118_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/119_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/11_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/120_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/121_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/122_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/123_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/124_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/125_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/126_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/127_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/128_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/129_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/12_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/130_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/131_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/132_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/133_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/134_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/135_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/136_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/137_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/138_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/139_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/13_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/140_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/141_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/142_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/143_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/144_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/14_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/15_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/16_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/17_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/18_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/19_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/20_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/21_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/22_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/23_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/24_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/25_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/26_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/27_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/28_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/29_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/30_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/31_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/32_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/33_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/34_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/35_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/36_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/37_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/38_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/39_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/40_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/41_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/42_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/43_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/44_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/45_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/46_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/47_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/48_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/49_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/50_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/51_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/52_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/53_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/54_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/55_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/56_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/57_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/58_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/59_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/60_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/61_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/62_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/63_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/64_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/65_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/66_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/67_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/68_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/69_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/70_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/71_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/72_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/73_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/74_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/75_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/76_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/77_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/78_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/79_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/80_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/81_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/82_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/83_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/84_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/85_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/86_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/87_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/88_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/89_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/90_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/91_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/92_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/93_0.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/94_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/95_1.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/96_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/97_2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/98_3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/99_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transform/image_transform.py" beforeDir="false" afterPath="$PROJECT_DIR$/transform/image_transform.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -152,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Document_angle$image_step.coverage" NAME="image_step Coverage Results" MODIFIED="1635768307283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/step" />
+    <SUITE FILE_PATH="coverage/Document_angle$image_step.coverage" NAME="image_step Coverage Results" MODIFIED="1635773937593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/step" />
     <SUITE FILE_PATH="coverage/Document_angle$resnet.coverage" NAME="resnet Coverage Results" MODIFIED="1634711340184" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model" />
     <SUITE FILE_PATH="coverage/Document_angle$angle.coverage" NAME="angle Coverage Results" MODIFIED="1635747881324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -166,16 +26,16 @@
           <entry key="jpg" value="121" />
           <entry key="md" value="1" />
           <entry key="pkl" value="4" />
-          <entry key="png" value="92" />
+          <entry key="png" value="97" />
           <entry key="py" value="103" />
-          <entry key="txt" value="125" />
+          <entry key="txt" value="126" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Image" value="213" />
+          <entry key="Image" value="218" />
           <entry key="Markdown" value="1" />
-          <entry key="PLAIN_TEXT" value="156" />
+          <entry key="PLAIN_TEXT" value="157" />
           <entry key="Python" value="103" />
         </counts>
       </usages-collector>
@@ -194,48 +54,48 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="6" />
-          <entry key="py" value="22111" />
+          <entry key="py" value="22644" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="6" />
-          <entry key="Python" value="22111" />
+          <entry key="Python" value="22644" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/step/image_step.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="499" column="43" selection-start-line="499" selection-start-column="43" selection-end-line="499" selection-end-column="43" />
+            <state relative-caret-position="171">
+              <caret line="498" column="46" lean-forward="true" selection-start-line="498" selection-start-column="46" selection-end-line="498" selection-end-column="46" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
                 <element signature="e#17977#18799#1" />
-                <marker date="1635768307102" expanded="true" signature="1064:1303" ph="..." />
-                <marker date="1635768307102" expanded="true" signature="2323:3334" ph="..." />
-                <marker date="1635768307102" expanded="true" signature="4010:4015" ph="..." />
-                <marker date="1635768307102" expanded="true" signature="4010:6398" ph="..." />
-                <marker date="1635768307102" expanded="true" signature="5802:6398" ph="..." />
-                <marker date="1635768307102" expanded="true" signature="15582:16374" ph="..." />
+                <marker date="1635772029439" expanded="true" signature="1064:1303" ph="..." />
+                <marker date="1635772029439" expanded="true" signature="2373:3456" ph="..." />
+                <marker date="1635772029439" expanded="true" signature="4132:4137" ph="..." />
+                <marker date="1635772029439" expanded="true" signature="4132:6520" ph="..." />
+                <marker date="1635772029439" expanded="true" signature="5924:6520" ph="..." />
+                <marker date="1635772029439" expanded="true" signature="15851:16649" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="true" current-in-tab="false">
-        <entry file="remoteDeploymentFS://&lt;fe45043f-a0dc-49ed-884a-78673879989b&gt;/home/std2022/zhaoxu/disk/result/result8/densenet121_G256_E8_curve.png">
+      <file pinned="true" current-in-tab="true">
+        <entry file="remoteDeploymentFS://&lt;fe45043f-a0dc-49ed-884a-78673879989b&gt;/home/std2022/zhaoxu/disk/result/result9/resnet34_G256_E10_curve.png">
           <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataset/image_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="367">
-              <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
+            <state relative-caret-position="2400">
+              <caret line="96" selection-start-line="96" selection-end-line="96" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -246,7 +106,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/util_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-165">
+            <state relative-caret-position="-255">
               <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
@@ -259,7 +119,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/driver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
+            <state relative-caret-position="-306">
               <caret line="99" column="15" selection-start-line="99" selection-start-column="15" selection-end-line="99" selection-end-column="15" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
@@ -271,8 +131,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/train_config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
+            <state relative-caret-position="95">
+              <caret line="5" column="34" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -280,10 +140,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/transform/image_transform.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-209">
-              <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
+            <state relative-caret-position="-735">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
               <folding>
-                <element signature="e#1286#1310#0" />
+                <element signature="e#0#43#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -320,7 +180,12 @@
       <find>device_ids</find>
       <find>1258</find>
       <find>Error on t</find>
+      <find>Accuracy</find>
+      <find>correction</find>
     </findStrings>
+    <replaceStrings>
+      <replace>accuracy</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -335,12 +200,12 @@
         <option value="$PROJECT_DIR$/model/resnet.py" />
         <option value="&lt;fe45043f-a0dc-49ed-884a-78673879989b&gt;/tmp/pycharm_project_800/Data/Bank_Train.csv" />
         <option value="$PROJECT_DIR$/utils/util_data.py" />
-        <option value="$PROJECT_DIR$/transform/image_transform.py" />
         <option value="$PROJECT_DIR$/config/train_config.py" />
         <option value="&lt;fe45043f-a0dc-49ed-884a-78673879989b&gt;/home/std2022/zhaoxu/Document_angle/Data/Bank_Train.csv" />
         <option value="$PROJECT_DIR$/Data/Bank_Train.csv" />
         <option value="$PROJECT_DIR$/driver.py" />
         <option value="$PROJECT_DIR$/dataset/image_dataset.py" />
+        <option value="$PROJECT_DIR$/transform/image_transform.py" />
         <option value="$PROJECT_DIR$/step/image_step.py" />
       </list>
     </option>
@@ -600,13 +465,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="28" width="1440" height="872" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.13590844" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4985694" visible="true" weight="0.39650872" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32917705" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4985694" visible="true" weight="0.18578553" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.19879518" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -621,7 +487,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Remote Host" order="3" sideWeight="0.77677226" visible="true" weight="0.21030043" />
+      <window_info active="true" anchor="right" id="Remote Host" order="3" sideWeight="0.77677226" visible="true" weight="0.2732475" />
       <window_info anchor="right" id="SciView" order="4" />
       <window_info anchor="right" x="0" y="0" width="310" height="672" id="Documentation" order="5" sideWeight="0.22322775" side_tool="true" weight="0.1795422" />
       <window_info anchor="right" id="Database" order="6" />
@@ -775,58 +641,10 @@
     <entry file="file://$PROJECT_DIR$/test/97_2.jpg">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/transform/image_transform.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-209">
-          <caret line="2" column="34" selection-start-line="2" selection-start-column="34" selection-end-line="2" selection-end-column="34" />
-          <folding>
-            <element signature="e#1286#1310#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Data/Bank_Train.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="100" selection-start-line="100" selection-end-line="100" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/util_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-165">
-          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
-            <marker date="1634981050053" expanded="true" signature="128:129" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/driver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="99" column="15" selection-start-line="99" selection-start-column="15" selection-end-line="99" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/train_config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataset/image_dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -851,19 +669,67 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/utils/util_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-255">
+          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+            <marker date="1634981050053" expanded="true" signature="128:129" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataset/image_dataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2400">
+          <caret line="96" selection-start-line="96" selection-end-line="96" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/train_config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="34" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/driver.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-306">
+          <caret line="99" column="15" selection-start-line="99" selection-start-column="15" selection-end-line="99" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transform/image_transform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-735">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="e#0#43#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/step/image_step.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="499" column="43" selection-start-line="499" selection-start-column="43" selection-end-line="499" selection-end-column="43" />
+        <state relative-caret-position="171">
+          <caret line="498" column="46" lean-forward="true" selection-start-line="498" selection-start-column="46" selection-end-line="498" selection-end-column="46" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
             <element signature="e#17977#18799#1" />
-            <marker date="1635768307102" expanded="true" signature="1064:1303" ph="..." />
-            <marker date="1635768307102" expanded="true" signature="2323:3334" ph="..." />
-            <marker date="1635768307102" expanded="true" signature="4010:4015" ph="..." />
-            <marker date="1635768307102" expanded="true" signature="4010:6398" ph="..." />
-            <marker date="1635768307102" expanded="true" signature="5802:6398" ph="..." />
-            <marker date="1635768307102" expanded="true" signature="15582:16374" ph="..." />
+            <marker date="1635772029439" expanded="true" signature="1064:1303" ph="..." />
+            <marker date="1635772029439" expanded="true" signature="2373:3456" ph="..." />
+            <marker date="1635772029439" expanded="true" signature="4132:4137" ph="..." />
+            <marker date="1635772029439" expanded="true" signature="4132:6520" ph="..." />
+            <marker date="1635772029439" expanded="true" signature="5924:6520" ph="..." />
+            <marker date="1635772029439" expanded="true" signature="15851:16649" ph="..." />
           </folding>
         </state>
       </provider>

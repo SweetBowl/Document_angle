@@ -65,6 +65,7 @@ class ImageStep():
         self.momentum = args.momentum
         self.weight_decay = args.weight_decay
         self.image_size = args.image_size
+        self.image_channels = args.image_channels
         self.batch_size = args.batch_size
         self.list = [[], [], [], [], []]
         self.train_test = args.train_test
@@ -75,16 +76,16 @@ class ImageStep():
     def model_zoo(self):
         if self.model_name == 'resnet50':
             self.model = models.resnet50(pretrained=False, num_classes=self.num_class)
-            self.model.conv1 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
         elif self.model_name == 'resnet34':
             self.model = models.resnet34(pretrained=False, num_classes=self.num_class)
-            self.model.conv1 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
         elif self.model_name == 'resnet18':
             self.model = models.resnet18(pretrained=False, num_classes=self.num_class)
-            self.model.conv1 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
         elif self.model_name == 'densenet121':
             self.model = models.densenet121(pretrained=False, num_classes=self.num_class)
-            self.model.features.conv0 = torch.nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.features.conv0 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
 
     def load_init_model(self):
         self.model_zoo()
@@ -187,9 +188,9 @@ class ImageStep():
         for i, (bank_data, doc_data) in enumerate(zip(cycle(self.train_loader_bank), self.train_loader_doc)):
             # 4*4*2
             bank_images = bank_data['image']
-            bank_images = bank_images.view([-1, 1, self.image_size, self.image_size])
+            bank_images = bank_images.view([-1, self.image_channels, self.image_size, self.image_size])
             doc_images = doc_data['image']
-            doc_images = doc_images.view([-1, 1, self.image_size, self.image_size])
+            doc_images = doc_images.view([-1, self.image_channels, self.image_size, self.image_size])
             images = torch.concat((bank_images, doc_images), 0)
             # print(images.shape)
             # If batch_size == 4, the shape of input data is: [32,1,1300,1300],
@@ -233,9 +234,9 @@ class ImageStep():
         with torch.no_grad():
             for i, (bank_data, doc_data) in enumerate(zip(cycle(self.val_loader_doc), self.val_loader_bank)):
                 bank_images = bank_data['image']
-                bank_images = bank_images.view([-1, 1, self.image_size, self.image_size])
+                bank_images = bank_images.view([-1, self.image_channels, self.image_size, self.image_size])
                 doc_images = doc_data['image']
-                doc_images = doc_images.view([-1, 1, self.image_size, self.image_size])
+                doc_images = doc_images.view([-1, self.image_channels, self.image_size, self.image_size])
                 images = torch.concat((bank_images, doc_images), 0)
 
                 bank_flags = bank_data['rotate_flag']
@@ -291,7 +292,7 @@ class ImageStep():
         self.draw_figures()
         self.save_list_val()
 
-    # test DNN
+    # test DNN on all test dataset
     def work_test_all(self):
         # self.model.eval()
         Error = 0
@@ -299,9 +300,9 @@ class ImageStep():
             for i, (bank_data, doc_data) in enumerate(zip(cycle(self.test_loader_bank), self.test_loader_doc)):
                 # because test_doc is longer than test_bank
                 bank_images = bank_data['image']
-                bank_images = bank_images.view([-1, 1, self.image_size, self.image_size])
+                bank_images = bank_images.view([-1, self.image_channels, self.image_size, self.image_size])
                 doc_images = doc_data['image']
-                doc_images = doc_images.view([-1, 1, self.image_size, self.image_size])
+                doc_images = doc_images.view([-1, self.image_channels, self.image_size, self.image_size])
                 images = torch.concat((bank_images, doc_images), 0)
 
                 bank_flags = bank_data['rotate_flag']
@@ -328,19 +329,19 @@ class ImageStep():
             self.list[3].append(Error / (i + 1))
             test_error = self.list[3]
             print('Error on test_all dataset: {}'.format(test_error[-1]))
-            correction = (1 - test_error[-1]) * 100
-            print('Correction on test_all dataset: {}%'.format(correction))
+            accuracy = (1 - test_error[-1]) * 100
+            print('Accuracy on test_all dataset: {}%'.format(accuracy))
             self.save_test_all()
             # break
 
+    # test DNN on bank test dataset only
     def work_test_bank(self):
-        # self.model.eval()
         Error = 0
         i = 0
         with torch.no_grad():
             for bank_data in self.test_loader_bank:
                 bank_images = bank_data['image']
-                bank_images = bank_images.view([-1, 1, self.image_size, self.image_size])
+                bank_images = bank_images.view([-1, self.image_channels, self.image_size, self.image_size])
 
                 bank_flags = bank_data['rotate_flag']
                 bank_flags = bank_flags.view([-1, 1])
@@ -362,8 +363,8 @@ class ImageStep():
             self.list[4].append(Error / i)
             test_error = self.list[4]
             print('Error on test_bank dataset: {}'.format(test_error[-1]))
-            correction = (1 - test_error[-1]) * 100
-            print('Correction on test_bank dataset: {}%'.format(correction))
+            accuracy = (1 - test_error[-1]) * 100
+            print('Accuracy on test_bank dataset: {}%'.format(accuracy))
             self.save_test_bank()
 
     # test the infer time on one image
@@ -372,13 +373,15 @@ class ImageStep():
         image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
         transform = transforms.Compose([
             ScaleResize(fixed_size=cfg.IMAGE_SIZE, fill_value=(255, 255, 255)),
-            transforms.Grayscale(1),
+
+            # transforms.Grayscale(1),
+
             transforms.ToTensor()
         ])
         image = transform(image)
         image = torch.unsqueeze(image, 0)
         image = image.to(self.device)
-        print(image.shape)
+        # print(image.shape)
 
         tis = time.time()
         output = self.model(image)
@@ -462,11 +465,11 @@ class ImageStep():
             fp.write(title)
             fp.write('test error on ALL dataset\n')
             for i in range(len(test_error) - 1):
-                correction = (1 - test_error[i]) * 100
-                fp.write('batch:{}, test_error:{}, test_correction:{}%\n'.format(10 * i + 1, test_error[i], correction))
-            correction = (1 - test_error[-1]) * 100
-            fp.write('ALL dataset: test_error:{}, test_correction:{}%\n'.format(test_error[-1], correction))
-        print("Successfully save test error and correction[ALL]!")
+                accuracy = (1 - test_error[i]) * 100
+                fp.write('batch:{}, test_error:{}, test_accuracy:{}%\n'.format(10 * i + 1, test_error[i], accuracy))
+            accuracy = (1 - test_error[-1]) * 100
+            fp.write('ALL dataset: test_error:{}, test_accuracy:{}%\n'.format(test_error[-1], accuracy))
+        print("Successfully save test error and accuracy[ALL]!")
 
     def save_test_bank(self):
         save_path = self.path['result_path'] + self.model_name + '_G' + str(self.image_size) + '_E' + str(
@@ -478,21 +481,21 @@ class ImageStep():
             fp.write(title)
             fp.write('test error on BANK dataset\n')
             for i in range(len(test_error) - 1):
-                correction = (1 - test_error[i]) * 100
-                fp.write('batch:{}, test_error:{}, test_correction:{}%\n'.format(10 * i + 1, test_error[i], correction))
-            correction = (1 - test_error[-1]) * 100
-            fp.write('BANK dataset: test_error:{}, test_correction:{}%\n'.format(test_error[-1], correction))
-        print("Successfully save test error and correction[BANK]!")
+                accuracy = (1 - test_error[i]) * 100
+                fp.write('batch:{}, test_error:{}, test_accuracy:{}%\n'.format(10 * i + 1, test_error[i], accuracy))
+            accuracy = (1 - test_error[-1]) * 100
+            fp.write('BANK dataset: test_error:{}, test_accuracy:{}%\n'.format(test_error[-1], accuracy))
+        print("Successfully save test error and accuracy[BANK]!")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', default='/home/std2022/zhaoxu/')
-    parser.add_argument('--result-dir', default='disk/result/result8/')
-    parser.add_argument('--train-test', default='test', type=str, help='choose to train or test model')
-    parser.add_argument('--model-name', default='densenet121', type=str, help='select the model')
-    parser.add_argument('--start-epoch', default=5, type=int, help='whether to train the model from scratch')
-    parser.add_argument('--epoch-num', default=8, type=int, help='epoch numbers')  # 3
+    parser.add_argument('--result-dir', default='disk/result/result10/')
+    parser.add_argument('--train-test', default='train', type=str, help='choose to train or test model')
+    parser.add_argument('--model-name', default='resnet50', type=str, help='select the model')
+    parser.add_argument('--start-epoch', default=0, type=int, help='whether to train the model from scratch')
+    parser.add_argument('--epoch-num', default=7, type=int, help='epoch numbers')  # 3
     parser.add_argument('--opt', default='sgd', type=str, help='select the optimizer')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')  # 0.001
     parser.add_argument('--logspace', default=1, type=float, help='adjust learning rate, refer to def work_train()')
@@ -500,6 +503,7 @@ def main():
     parser.add_argument('--weight-decay', default=1e-4, type=float, help='params of optimizer: weight decay')
     parser.add_argument('--num-class', default=4, type=int, help='number of classes')
     parser.add_argument('--image-size', default=cfg.IMAGE_SIZE[0], type=int, help='change the image size(square)')
+    parser.add_argument('--image-channels',default=3,type=int,help='the channels of image: 1 or 3')
     parser.add_argument('--batch-size', default=cfg.BATCH_SIZE, type=int)
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--gpu-id', default='1,2,3', type=str)
@@ -588,7 +592,7 @@ DenseNet --> worse than Resnet
 --------------------------------
 Conclusion: simpler models can achieve better performance on this task.
 
-resize to 256*256 --> decrease the correction
+resize to 256*256 --> decrease the accuracy
 
 change to 3 channels
 '''
