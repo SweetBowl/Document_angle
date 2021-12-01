@@ -14,4 +14,4 @@ class TrainConfig(AbstractConfig):
         self.NUM_WORKERS = 6
 
     def model_config(self):
-        self.IMAGE_SIZE = (256, 256)
+        self.IMAGE_SIZE = (1000, 1000)

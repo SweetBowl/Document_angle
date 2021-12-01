@@ -76,16 +76,20 @@ class ImageStep():
     def model_zoo(self):
         if self.model_name == 'resnet50':
             self.model = models.resnet50(pretrained=False, num_classes=self.num_class)
-            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2),
+                                               padding=(3, 3), bias=False)
         elif self.model_name == 'resnet34':
             self.model = models.resnet34(pretrained=False, num_classes=self.num_class)
-            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2),
+                                               padding=(3, 3), bias=False)
         elif self.model_name == 'resnet18':
             self.model = models.resnet18(pretrained=False, num_classes=self.num_class)
-            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.conv1 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2),
+                                               padding=(3, 3), bias=False)
         elif self.model_name == 'densenet121':
             self.model = models.densenet121(pretrained=False, num_classes=self.num_class)
-            self.model.features.conv0 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            self.model.features.conv0 = torch.nn.Conv2d(self.image_channels, 64, kernel_size=(7, 7), stride=(2, 2),
+                                                        padding=(3, 3), bias=False)
 
     def load_init_model(self):
         self.model_zoo()
@@ -316,8 +320,10 @@ class ImageStep():
                 images = images.float()
                 images = images.to(self.device)
                 rotated_flags = rotated_flags.to(self.device)
+                tis = time.time()
                 output = self.model(images)
-                # loss = self.loss_func(output, rotated_flags)
+                time_expand = time.time() - tis
+
                 pre = output.detach().max(1)[1]
                 error = self.get_error(pre, rotated_flags)
 
@@ -326,18 +332,21 @@ class ImageStep():
                     print("[test all] batch: %d, error: %.3f" % (i + 1, Error / (i + 1)))
                     self.list[3].append(Error / (i + 1))
 
+            print("[TIME] batch size: %d, time: %.5fs" % (self.batch_size * 8, time_expand))
+
             self.list[3].append(Error / (i + 1))
             test_error = self.list[3]
             print('Error on test_all dataset: {}'.format(test_error[-1]))
             accuracy = (1 - test_error[-1]) * 100
             print('Accuracy on test_all dataset: {}%'.format(accuracy))
             self.save_test_all()
-            # break
+    # [TIME] batch size: 32, time: 0.12558s (resnet18)
 
     # test DNN on bank test dataset only
     def work_test_bank(self):
         Error = 0
         i = 0
+        time_expand = 0
         with torch.no_grad():
             for bank_data in self.test_loader_bank:
                 bank_images = bank_data['image']
@@ -350,15 +359,20 @@ class ImageStep():
                 images = bank_images.float()
                 images = images.to(self.device)
                 rotated_flags = rotated_flags.to(self.device)
+                tis = time.time()
                 output = self.model(images)
+                time_expand = time.time() - tis
                 pre = output.detach().max(1)[1]
                 error = self.get_error(pre, rotated_flags)
 
                 Error += error
                 if i % 10 == 0:
                     print("[test bank] batch: %d, error: %.3f" % (i + 1, Error / (i + 1)))
+                    # print("[test bank] batch size: %d, time: %.5f" % (self.batch_size*4, time_expand))
                     self.list[4].append(Error / (i + 1))
                 i += 1
+
+            print("[TIME] batch size: %d, time: %.5fs" % (self.batch_size * 8, time_expand))
 
             self.list[4].append(Error / i)
             test_error = self.list[4]
@@ -366,15 +380,20 @@ class ImageStep():
             accuracy = (1 - test_error[-1]) * 100
             print('Accuracy on test_bank dataset: {}%'.format(accuracy))
             self.save_test_bank()
+    # [TIME] batch size: 32, time: 0.13804s (result7/resnet18 256*256)
+    # [TIME] batch size: 32, time: 0.77109s (result3/resnet34 1000*1000)
 
     # test the infer time on one image
     def test_one_image(self):
         # self.model().eval()
-        image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
-        transform = transforms.Compose([
-            ScaleResize(fixed_size=cfg.IMAGE_SIZE, fill_value=(255, 255, 255)),
 
-            # transforms.Grayscale(1),
+        image = Image.open('/home/std2022/zhaoxu/tmp.jpg').convert('RGB')
+                           # 'disk/Bank/Images/0047.jpg').convert('RGB')
+        transform = transforms.Compose([
+            # ScaleResize(fixed_size=cfg.IMAGE_SIZE, fill_value=(255, 255, 255)),
+
+            # Change image channels from 3 to 1
+            transforms.Grayscale(1),
 
             transforms.ToTensor()
         ])
@@ -385,13 +404,30 @@ class ImageStep():
 
         tis = time.time()
         output = self.model(image)
-        # pre = output.detach().max(1)[1]
+        pre = output.detach().max(1)[1]
         time_expand = time.time() - tis
 
         print("predict: {}".format(pre))
-        print("time used on one image: {}".format(time_expand))
+        print("time used on one image: {}s".format(time_expand))
         # predict: tensor([0], device='cuda:0')
         # time used on one image: 0.6052532196044922
+
+        # model path: result5/resnet34_..._E4
+        # predict: tensor([0], device='cuda:0')
+        # time used on one image: 0.37607359886169434
+        # just time used on predict
+        # ------------------------
+        # predict: tensor([0], device='cuda:0')
+        # time used on one image: 0.4475886821746826
+        # timed used on the whole process
+
+        # model path: result7/resnet18...E4
+        # predict: tensor([0], device='cuda:0')
+        # time used on one image: 0.3287224769592285s
+
+        # model path: result3/resnet34_..._E7
+        # time used on one image: 0.4780392646789551s
+        # just time used on predict
 
     def draw_figures(self):
         x = np.arange(0, len(self.list[0]), 1)
@@ -491,9 +527,9 @@ class ImageStep():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', default='/home/std2022/zhaoxu/')
-    parser.add_argument('--result-dir', default='disk/result/result10/')
-    parser.add_argument('--train-test', default='train', type=str, help='choose to train or test model')
-    parser.add_argument('--model-name', default='resnet50', type=str, help='select the model')
+    parser.add_argument('--result-dir', default='disk/result/result3/')
+    parser.add_argument('--train-test', default='test', type=str, help='choose to train or test model')
+    parser.add_argument('--model-name', default='resnet34', type=str, help='select the model')
     parser.add_argument('--start-epoch', default=0, type=int, help='whether to train the model from scratch')
     parser.add_argument('--epoch-num', default=7, type=int, help='epoch numbers')  # 3
     parser.add_argument('--opt', default='sgd', type=str, help='select the optimizer')
@@ -503,10 +539,10 @@ def main():
     parser.add_argument('--weight-decay', default=1e-4, type=float, help='params of optimizer: weight decay')
     parser.add_argument('--num-class', default=4, type=int, help='number of classes')
     parser.add_argument('--image-size', default=cfg.IMAGE_SIZE[0], type=int, help='change the image size(square)')
-    parser.add_argument('--image-channels',default=3,type=int,help='the channels of image: 1 or 3')
+    parser.add_argument('--image-channels', default=1, type=int, help='the channels of image: 1 or 3')
     parser.add_argument('--batch-size', default=cfg.BATCH_SIZE, type=int)
     parser.add_argument('--seed', default=0, type=int)
-    parser.add_argument('--gpu-id', default='1,2,3', type=str)
+    parser.add_argument('--gpu-id', default='0,1,3', type=str)
 
     args = parser.parse_args()
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
@@ -594,5 +630,7 @@ Conclusion: simpler models can achieve better performance on this task.
 
 resize to 256*256 --> decrease the accuracy
 
-change to 3 channels
+change to 3 channels --> little influence
 '''
+
+# Train with image size 1000*1000, use the origin image to test
