@@ -5,6 +5,7 @@ import torch
 from torchvision import transforms
 from torchvision.transforms import functional as F
 from transform.basic_transform import ScaleResize, Selector
+from itertools import cycle
 from PIL import Image
 
 cfg = config.train_config.TrainConfig()
@@ -52,6 +53,70 @@ doc_loader_test = doc_loader['test']
 # k = 0
 # # bank & document [train]
 #
+
+for i, (bank_data, doc_data) in enumerate(zip(cycle(bank_loader_test), doc_loader_test)):
+    # print(bank_data['image'].shape)
+    # print(bank_data['rotate_flag'].shape)
+    # rotate_flags = bank_data['rotate_flag'].squeeze()
+    # print(rotate_flags)
+
+    bank_images = bank_data['image']
+    bank_images = bank_images.view([-1, 1, 1400, 1400])
+    doc_images = doc_data['image']
+    doc_images = doc_images.view([-1, 1, 1400, 1400])
+    images = torch.concat((bank_images, doc_images), 0)
+
+    bank_flags = bank_data['rotate_flag']
+    bank_flags = bank_flags.view([-1, 1])
+    bank_flags = bank_flags.squeeze()
+    doc_flags = doc_data['rotate_flag']
+    doc_flags = doc_flags.view([-1, 1])
+    doc_flags = doc_flags.squeeze()
+    # print(bank_flags)
+    # print(doc_flags)
+    if bank_flags.ndim == 0:
+        bank_flags = bank_flags.unsqueeze(0)
+    if doc_flags.ndim == 0:
+        doc_flags = doc_flags.unsqueeze(0)
+
+    rotated_flags = torch.concat((bank_flags, doc_flags), 0)
+    print(bank_flags)
+    print(doc_flags)
+    print(rotated_flags)
+    print(rotated_flags.shape)
+    print('---------')
+    if rotated_flags.ndim == 0:
+        break
+
+# for i, (bank_data, doc_data) in enumerate(zip(cycle(bank_loader_train), doc_loader_train)):
+#     # rotate_flags = bank_data['rotate_flag'].squeeze()
+#     # print(rotate_flags)
+#
+#     # bank_images = bank_data['image']
+#     # print(bank_images.shape)
+#     # bank_images = bank_images.view([-1, 1, cfg.IMAGE_SIZE, cfg.IMAGE_SIZE])
+#     # doc_images = doc_data['image']
+#     # doc_images = doc_images.view([-1, 1, cfg.IMAGE_SIZE, cfg.IMAGE_SIZE])
+#     # images = torch.concat((bank_images, doc_images), 0)
+#
+#     bank_flags = bank_data['rotate_flag']
+#     bank_flags = bank_flags.view([-1, 1])
+#     bank_flags = bank_flags.squeeze()
+#     doc_flags = doc_data['rotate_flag']
+#     doc_flags = doc_flags.view([-1, 1])
+#     doc_flags = doc_flags.squeeze()
+#     # print(bank_flags)
+#     # print(doc_flags)
+#
+#     rotated_flags = torch.concat((bank_flags, doc_flags), 0)
+#     print(bank_flags)
+#     print(bank_flags.shape)
+#     print(doc_flags)
+#     print(rotated_flags)
+#     print(rotated_flags.shape)
+#     print('---------')
+#     break
+
 '''
 image_size = cfg.IMAGE_SIZE[0]
 for i, (bank_data,doc_data) in enumerate(zip(bank_loader_train,doc_loader_train)):
@@ -86,25 +151,25 @@ print(i)
 # # return the 4 rotated copies of the image and the flag of the rotation
 # # i.e. 0 for 0 degrees, 1 for 90 degrees, 2 for 180 degrees, 3 for 270 degrees
 # image = self.to_tensor(image)
-
-image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
-transform = transforms.Compose([
-    ScaleResize(fixed_size=cfg.IMAGE_SIZE,
-                fill_value=(255, 255, 255)),
-    transforms.Grayscale(1),
-    transforms.ToTensor()
-])
-
-image = transform(image)
-image = torch.unsqueeze(image, 0)
-print(image.shape)
-
-j = 0
-for i in range(5):
-    print(i)
-    j += 1
-
-print(j)
+#
+# image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/0047.jpg').convert('RGB')
+# transform = transforms.Compose([
+#     ScaleResize(fixed_size=cfg.IMAGE_SIZE,
+#                 fill_value=(255, 255, 255)),
+#     transforms.Grayscale(1),
+#     transforms.ToTensor()
+# ])
+#
+# image = transform(image)
+# image = torch.unsqueeze(image, 0)
+# print(image.shape)
+#
+# j = 0
+# for i in range(5):
+#     print(i)
+#     j += 1
+#
+# print(j)
 
 # [1, 1, 1000, 1000]
 # image = F.to_pil_image(image)

@@ -236,7 +236,7 @@ class ImageStep():
         self.model.eval()
         Error = 0
         with torch.no_grad():
-            for i, (bank_data, doc_data) in enumerate(zip(cycle(self.val_loader_doc), self.val_loader_bank)):
+            for i, (bank_data, doc_data) in enumerate(zip(cycle(self.val_loader_bank), self.val_loader_doc)):
                 bank_images = bank_data['image']
                 bank_images = bank_images.view([-1, self.image_channels, self.image_size, self.image_size])
                 doc_images = doc_data['image']
@@ -315,6 +315,10 @@ class ImageStep():
                 doc_flags = doc_data['rotate_flag']
                 doc_flags = doc_flags.view([-1, 1])
                 doc_flags = doc_flags.squeeze()
+                if bank_flags.ndim == 0:
+                    bank_flags = bank_flags.unsqueeze(0)
+                if doc_flags.ndim == 0:
+                    doc_flags = doc_flags.unsqueeze(0)
                 rotated_flags = torch.concat((bank_flags, doc_flags), 0)
 
                 images = images.float()
@@ -350,7 +354,7 @@ class ImageStep():
         with torch.no_grad():
             for bank_data in self.test_loader_bank:
                 bank_images = bank_data['image']
-                bank_images = bank_images.view([-1, self.image_channels, self.image_size, self.image_size])
+                bank_images = bank_images.view([-1, self.image_channels, self.image_size,self.image_size])
 
                 bank_flags = bank_data['rotate_flag']
                 bank_flags = bank_flags.view([-1, 1])
@@ -390,7 +394,7 @@ class ImageStep():
         image = Image.open('/home/std2022/zhaoxu/tmp.jpg').convert('RGB')
                            # 'disk/Bank/Images/0047.jpg').convert('RGB')
         transform = transforms.Compose([
-            # ScaleResize(fixed_size=cfg.IMAGE_SIZE, fill_value=(255, 255, 255)),
+            # ScaleResize(fixed_size=(1000,1000), fill_value=(255, 255, 255)),
 
             # Change image channels from 3 to 1
             transforms.Grayscale(1),
@@ -399,16 +403,20 @@ class ImageStep():
         ])
         image = transform(image)
         image = torch.unsqueeze(image, 0)
+        print('tmp Image Shape:{}'.format(image.shape))
+
         image = image.to(self.device)
         # print(image.shape)
 
-        tis = time.time()
+        # tis = time.time()
         output = self.model(image)
         pre = output.detach().max(1)[1]
-        time_expand = time.time() - tis
+        # time_expand = time.time() - tis
 
         print("predict: {}".format(pre))
-        print("time used on one image: {}s".format(time_expand))
+        # print("time used on one image: {}s".format(time_expand))
+
+        # +++++ Resize to 1000*1000 +++++
         # predict: tensor([0], device='cuda:0')
         # time used on one image: 0.6052532196044922
 
@@ -428,6 +436,14 @@ class ImageStep():
         # model path: result3/resnet34_..._E7
         # time used on one image: 0.4780392646789551s
         # just time used on predict
+
+        # +++++ Use the original size +++++
+        # predict: tensor([2], device='cuda:0')
+        # Time used on one image completely: 0.64734 s
+
+    def test_original_image(self):
+        # Iteration
+        pass
 
     def draw_figures(self):
         x = np.arange(0, len(self.list[0]), 1)
@@ -492,7 +508,7 @@ class ImageStep():
             print("Successfully save train val lists!")
 
     def save_test_all(self):
-        save_path = self.path['result_path'] + self.model_name + '_G' + str(self.image_size) + '_E' + str(
+        save_path = self.path['result_path'] + self.model_name + '_G' + str(1000) + '_E' + str(
             self.epoch_num) + '_test_all.txt'
         save_path = os.path.join(save_path)
         with open(save_path, 'w') as fp:
@@ -553,28 +569,30 @@ def main():
     trainer = ImageStep(args)
 
     # "train" indicates training model, while "test" indicates test_DNN
-    if args.train_test == 'train':
-        # start_epoch ==0, train the model from scratch
-        if args.start_epoch == 0:
-            trainer.load_init_model()
-            trainer.load_data(dataset='bank_doc_train')
-            trainer.work_train(args)
-        else:
-            trainer.load_latest_epoch()
-            trainer.load_data(dataset='bank_doc_train')
-            trainer.work_train(args)
-
-    elif args.train_test == 'test':
-        # Test the model on all dataset
-        trainer.load_trained_model()
-        trainer.load_data(dataset='bank_doc_train')
-        trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
-        # trainer.work_test_bank()  # test DNN on bank test dataset
+    # if args.train_test == 'train':
+    #     # start_epoch ==0, train the model from scratch
+    #     if args.start_epoch == 0:
+    #         trainer.load_init_model()
+    #         trainer.load_data(dataset='bank_doc_train')
+    #         trainer.work_train(args)
+    #     else:
+    #         trainer.load_latest_epoch()
+    #         trainer.load_data(dataset='bank_doc_train')
+    #         trainer.work_train(args)
+    #
+    # elif args.train_test == 'test':
+    #     # Test the model on all dataset
+    #     trainer.load_trained_model()
+    #     trainer.load_data(dataset='bank_doc_train')
+    #     # trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
+    #     trainer.work_test_bank()  # test DNN on bank test dataset
 
     # Test the model on one image
-    # trainer.model_one_GPU()
-    # trainer.test_one_image()
-
+    trainer.model_one_GPU()
+    tis = time.time()
+    trainer.test_one_image()
+    time_expand = time.time()-tis
+    print("Time used on one image completely: %.5f s" % (time_expand))
 
 if __name__ == '__main__':
     main()
@@ -633,4 +651,5 @@ resize to 256*256 --> decrease the accuracy
 change to 3 channels --> little influence
 '''
 
-# Train with image size 1000*1000, use the origin image to test
+# Train with image size 1000*1000, use the 1400*1400 image to test  --> 效果不如用1000*1000 的test
+# 逐个测试图片
