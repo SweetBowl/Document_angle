@@ -3,7 +3,7 @@ from .abstract_dataset import *
 from PIL import Image
 import pandas as pd
 from transform.image_transform import ImageTrainTransform
-from transform.image_transform import ImageTestTransformOne
+from transform.image_transform import ImageTestTransformOneFix
 
 __all__ = [
     'Bank_Train', 'Bank_Val', 'Bank_Test', 'Doc_Train', 'Doc_Val', 'Doc_Test'
@@ -50,7 +50,7 @@ def Bank_Val(cfg):
     return ImageDataset(
         data_frame=data_frame,
         # transform=ImageTestTransform(fixed_size=cfg.IMAGE_SIZE),
-        transform=ImageTestTransformOne(fixed_size=cfg.IMAGE_SIZE),
+        transform=ImageTestTransformOneFix(fixed_size=cfg.IMAGE_SIZE),
         shuffle=False,
         batch_size=cfg.BATCH_SIZE,
         num_workers=cfg.NUM_WORKERS,
@@ -64,7 +64,7 @@ def Bank_Test(cfg):
     return ImageDataset(
         data_frame=data_frame,
         # transform=ImageTestTransform(fixed_size=cfg.IMAGE_SIZE),
-        transform=ImageTestTransformOne(fixed_size=(cfg.IMAGE_SIZE)),
+        transform=ImageTestTransformOneFix(fixed_size=(cfg.IMAGE_SIZE)),
         shuffle=False,
         batch_size=cfg.BATCH_SIZE,
         num_workers=cfg.NUM_WORKERS,
@@ -90,7 +90,7 @@ def Doc_Val(cfg):
     return ImageDataset(
         data_frame=data_frame,
         # transform=ImageTestTransform(fixed_size=cfg.IMAGE_SIZE),
-        transform=ImageTestTransformOne(fixed_size=cfg.IMAGE_SIZE),
+        transform=ImageTestTransformOneFix(fixed_size=cfg.IMAGE_SIZE),
         shuffle=False,
         batch_size=cfg.BATCH_SIZE,
         num_workers=cfg.NUM_WORKERS,
@@ -104,7 +104,7 @@ def Doc_Test(cfg):
     return ImageDataset(
         data_frame=data_frame,
         # transform=ImageTestTransform(fixed_size=cfg.IMAGE_SIZE),
-        transform=ImageTestTransformOne(fixed_size=(cfg.IMAGE_SIZE)),
+        transform=ImageTestTransformOneFix(fixed_size=(cfg.IMAGE_SIZE)),
         shuffle=False,
         batch_size=cfg.BATCH_SIZE,
         num_workers=cfg.NUM_WORKERS,

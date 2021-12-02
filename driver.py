@@ -7,6 +7,8 @@ from torchvision.transforms import functional as F
 from transform.basic_transform import ScaleResize, Selector
 from itertools import cycle
 from PIL import Image
+import os
+from transform.image_transform import ImageTestTransformOneRaw
 
 cfg = config.train_config.TrainConfig()
 
@@ -54,39 +56,116 @@ doc_loader_test = doc_loader['test']
 # # bank & document [train]
 #
 
-for i, (bank_data, doc_data) in enumerate(zip(cycle(bank_loader_test), doc_loader_test)):
-    # print(bank_data['image'].shape)
-    # print(bank_data['rotate_flag'].shape)
-    # rotate_flags = bank_data['rotate_flag'].squeeze()
-    # print(rotate_flags)
+# for i, (bank_data, doc_data) in enumerate(zip(cycle(bank_loader_test), doc_loader_test)):
+#     # print(bank_data['image'].shape)
+#     # print(bank_data['rotate_flag'].shape)
+#     # rotate_flags = bank_data['rotate_flag'].squeeze()
+#     # print(rotate_flags)
+#
+#     bank_images = bank_data['image']
+#     bank_images = bank_images.view([-1, 1, 1400, 1400])
+#     doc_images = doc_data['image']
+#     doc_images = doc_images.view([-1, 1, 1400, 1400])
+#     images = torch.concat((bank_images, doc_images), 0)
+#
+#     bank_flags = bank_data['rotate_flag']
+#     bank_flags = bank_flags.view([-1, 1])
+#     bank_flags = bank_flags.squeeze()
+#     doc_flags = doc_data['rotate_flag']
+#     doc_flags = doc_flags.view([-1, 1])
+#     doc_flags = doc_flags.squeeze()
+#     # print(bank_flags)
+#     # print(doc_flags)
+#     if bank_flags.ndim == 0:
+#         bank_flags = bank_flags.unsqueeze(0)
+#     if doc_flags.ndim == 0:
+#         doc_flags = doc_flags.unsqueeze(0)
+#
+#     rotated_flags = torch.concat((bank_flags, doc_flags), 0)
+#     print(bank_flags)
+#     print(doc_flags)
+#     print(rotated_flags)
+#     print(rotated_flags.shape)
+#     print('---------')
+#     if rotated_flags.ndim == 0:
+#         break
 
-    bank_images = bank_data['image']
-    bank_images = bank_images.view([-1, 1, 1400, 1400])
-    doc_images = doc_data['image']
-    doc_images = doc_images.view([-1, 1, 1400, 1400])
-    images = torch.concat((bank_images, doc_images), 0)
+# class ImageTestTransformK():
+#     def __init__(self):
+#         rotate_fn = [
+#             lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
+#             lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
+#         ]
+#         self.rotate = Selector(transforms=rotate_fn)
+#         self.to_tensor = transforms.ToTensor()
+#         self.gray_scale = transforms.Grayscale(1)
+#
+#     def __call__(self,input):
+#         image, rotate_flag = self.rotate(input)
+#         image = self.gray_scale(image)
+#         image = self.to_tensor(image)
+#         rotate_flag = torch.LongTensor([rotate_flag])
+#         return (image, rotate_flag)
 
-    bank_flags = bank_data['rotate_flag']
-    bank_flags = bank_flags.view([-1, 1])
-    bank_flags = bank_flags.squeeze()
-    doc_flags = doc_data['rotate_flag']
-    doc_flags = doc_flags.view([-1, 1])
-    doc_flags = doc_flags.squeeze()
-    # print(bank_flags)
-    # print(doc_flags)
-    if bank_flags.ndim == 0:
-        bank_flags = bank_flags.unsqueeze(0)
-    if doc_flags.ndim == 0:
-        doc_flags = doc_flags.unsqueeze(0)
+TestTransform = ImageTestTransformOneRaw()
 
-    rotated_flags = torch.concat((bank_flags, doc_flags), 0)
-    print(bank_flags)
-    print(doc_flags)
-    print(rotated_flags)
-    print(rotated_flags.shape)
-    print('---------')
-    if rotated_flags.ndim == 0:
-        break
+def transform(input):
+    rotate_fn = [
+        lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
+        lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
+    ]
+    rotate = Selector(transforms=rotate_fn)
+    image, rotate_flag = rotate(input)
+    totensor = transforms.ToTensor()
+    image = totensor(image)
+    gray_scale = transforms.Grayscale(1)
+    image = gray_scale(image)
+    return (image, rotate_flag)
+
+# image = Image.open('/home/std2022/zhaoxu/tmp.jpg')
+# # image_ , flag = TestTransform(image)
+# imgae_, flag = transform(image)
+# print(flag)
+
+
+for filename in os.listdir('/home/std2022/zhaoxu/Document_angle/test/'):
+    # print(filename)
+    im=Image.open('/home/std2022/zhaoxu/Document_angle/test/'+filename)
+    image, flag = TestTransform(im)
+    print(flag)
+    # im=im.rotate(90,expand=True)
+    # break
+
+# class ImageTestTransformOne(AbstractTransform):
+#     def __init__(self,fixed_size) -> None:
+#         super().__init__()
+#         self.resize = ScaleResize(fixed_size=fixed_size,
+#                                   fill_value=(255, 255, 255))
+#         self.to_tensor = transforms.ToTensor()
+#         rotate_fn = [
+#             lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
+#             lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
+#         ]
+#         self.rotate = Selector(transforms=rotate_fn)
+#         # self.small_angle_rotate = transforms.RandomRotation(degrees=5)
+#         # self.colorjitter = transforms.ColorJitter(0.1, 0.1, 0.1, 0.1)
+#         self.gray_scale = transforms.Grayscale(1)
+#
+#     def __call__(self, input_dict: Dict[str, Any]) -> Dict[str, Any]:
+#         transformed_dict = {}
+#         image = input_dict['image']
+#         image = self.resize(image)
+#         image, rotate_flag = self.rotate(image)
+#         # image = self.small_angle_rotate(image)
+#         image = self.gray_scale(image)
+#         image = self.to_tensor(image)
+#         transformed_dict['image'] = image
+#         rotate_flag = torch.LongTensor([rotate_flag])
+#         transformed_dict['rotate_flag'] = rotate_flag
+#         return transformed_dict
+
+
+
 
 # for i, (bank_data, doc_data) in enumerate(zip(cycle(bank_loader_train), doc_loader_train)):
 #     # rotate_flags = bank_data['rotate_flag'].squeeze()

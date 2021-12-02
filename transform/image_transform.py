@@ -85,7 +85,7 @@ class ImageTestTransform(AbstractTransform):
         return transformed_dict
 
 
-class ImageTestTransformOne(AbstractTransform):
+class ImageTestTransformOneFix(AbstractTransform):
     def __init__(self,fixed_size) -> None:
         super().__init__()
         self.resize = ScaleResize(fixed_size=fixed_size,
@@ -112,3 +112,22 @@ class ImageTestTransformOne(AbstractTransform):
         rotate_flag = torch.LongTensor([rotate_flag])
         transformed_dict['rotate_flag'] = rotate_flag
         return transformed_dict
+
+class ImageTestTransformOneRaw(AbstractTransform):
+    def __init__(self):
+        super().__init__()
+        rotate_fn = [
+            lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
+            lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
+        ]
+        self.rotate = Selector(transforms=rotate_fn)
+        self.to_tensor = transforms.ToTensor()
+        self.gray_scale = transforms.Grayscale(1)
+
+    def __call__(self,input):
+        image, rotate_flag = self.rotate(input)
+        image = self.gray_scale(image)
+        image = self.to_tensor(image)
+        rotate_flag = torch.LongTensor([rotate_flag])
+        return (image, rotate_flag)
+

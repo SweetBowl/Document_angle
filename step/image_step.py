@@ -20,6 +20,8 @@ from itertools import cycle
 import argparse
 import time
 import warnings
+import gc
+from transform.image_transform import ImageTestTransformOneRaw
 
 # import torch.distributed as dist
 # from torch.nn.parallel import DistributedDataParallel as DDP
@@ -395,7 +397,6 @@ class ImageStep():
                            # 'disk/Bank/Images/0047.jpg').convert('RGB')
         transform = transforms.Compose([
             # ScaleResize(fixed_size=(1000,1000), fill_value=(255, 255, 255)),
-
             # Change image channels from 3 to 1
             transforms.Grayscale(1),
 
@@ -441,9 +442,44 @@ class ImageStep():
         # predict: tensor([2], device='cuda:0')
         # Time used on one image completely: 0.64734 s
 
+    # def get_error(self, pre, lbl):
+    #     acc = torch.sum(pre == lbl).item() / len(pre)
+    #     return 1 - acc
+
     def test_original_image(self):
-        # Iteration
-        pass
+        test_transform = ImageTestTransformOneRaw()
+        correct_num = 0
+        total = 0
+        for filename in os.listdir('/home/std2022/zhaoxu/disk/Bank/Images/'):
+            image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/'+filename).convert('RGB')
+            image, flag = test_transform(image)
+            # 输入模型
+            image = torch.unsqueeze(image,0)
+            image = image.to(self.device)
+            flag = flag.to(self.device)
+            # print(image.shape)
+            tis = time.time()
+            output = self.model(image)
+            pre = output.detach().max(1)[1]
+            time_expand = time.time() - tis
+            # print(flag)
+            # print(pre)
+            # 评估准确率
+            if pre == flag:
+                correct_num += 1
+            print("{} time used on the image: {:.4f}s".format(total,time_expand))
+            total += 1
+
+            if total == 500:
+                break
+            # torch.cuda.empty_cache()
+            # gc.collect()
+            #  CUDA out of memory.
+
+        accuracy = correct_num/total
+        accuracy = accuracy * 100
+        print("Accuracy on the original image: {:.5f} %".format(accuracy))
+        # Accuracy on the original image: 75.20000 %
 
     def draw_figures(self):
         x = np.arange(0, len(self.list[0]), 1)
@@ -589,10 +625,11 @@ def main():
 
     # Test the model on one image
     trainer.model_one_GPU()
-    tis = time.time()
-    trainer.test_one_image()
-    time_expand = time.time()-tis
-    print("Time used on one image completely: %.5f s" % (time_expand))
+    trainer.test_original_image()
+    # tis = time.time()
+    # trainer.test_one_image()
+    # time_expand = time.time()-tis
+    # print("Time used on one image completely: %.5f s" % (time_expand))
 
 if __name__ == '__main__':
     main()
