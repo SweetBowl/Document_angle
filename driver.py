@@ -9,6 +9,7 @@ from itertools import cycle
 from PIL import Image
 import os
 from transform.image_transform import ImageTestTransformOneRaw
+import pandas as pd
 
 cfg = config.train_config.TrainConfig()
 
@@ -128,13 +129,32 @@ def transform(input):
 # print(flag)
 
 
-for filename in os.listdir('/home/std2022/zhaoxu/Document_angle/test/'):
-    # print(filename)
-    im=Image.open('/home/std2022/zhaoxu/Document_angle/test/'+filename)
-    image, flag = TestTransform(im)
-    print(flag)
+# for filename in os.listdir('/home/std2022/zhaoxu/Document_angle/test/'):
+#     # print(filename)
+#     im=Image.open('/home/std2022/zhaoxu/Document_angle/test/'+filename)
+#     image, flag = TestTransform(im)
+#     print(flag)
     # im=im.rotate(90,expand=True)
     # break
+
+# csv_path = path.join(path.dirname(__file__), '..', 'Data/Bank_Test.csv')
+data_frame = pd.read_csv('/home/std2022/zhaoxu/Document_angle/Data/Bank_Test.csv')
+print(data_frame)
+for index, row in data_frame.iterrows():
+    print(row['image_path'])
+# info = data_frame.iloc[0,:]
+# print(info[0])
+# def __getitem__(self, index):
+#     if torch.is_tensor(index):
+#         index = index.tolist(index)
+#
+#     info_dict = self.data_frame.loc[index, :]
+#     item_dict = {'index': index}
+#
+#     for key in self.keys:
+#         item_dict[key] = info_dict[key]
+#
+#     return item_dict
 
 # class ImageTestTransformOne(AbstractTransform):
 #     def __init__(self,fixed_size) -> None:

@@ -120,12 +120,14 @@ class ImageTestTransformOneRaw(AbstractTransform):
             lambda img: F.rotate(img, 0), lambda img: F.rotate(img, 90),
             lambda img: F.rotate(img, 180), lambda img: F.rotate(img, 270)
         ]
+        self.resize = ScaleResize(fixed_size=(1000,1000),fill_value=(255,255,255))
         self.rotate = Selector(transforms=rotate_fn)
         self.to_tensor = transforms.ToTensor()
         self.gray_scale = transforms.Grayscale(1)
 
-    def __call__(self,input):
-        image, rotate_flag = self.rotate(input)
+    def __call__(self,image):
+        image = self.resize(image)
+        image, rotate_flag = self.rotate(image)
         image = self.gray_scale(image)
         image = self.to_tensor(image)
         rotate_flag = torch.LongTensor([rotate_flag])

@@ -20,7 +20,7 @@ from itertools import cycle
 import argparse
 import time
 import warnings
-import gc
+import pandas as pd
 from transform.image_transform import ImageTestTransformOneRaw
 
 # import torch.distributed as dist
@@ -413,73 +413,58 @@ class ImageStep():
         output = self.model(image)
         pre = output.detach().max(1)[1]
         # time_expand = time.time() - tis
-
         print("predict: {}".format(pre))
-        # print("time used on one image: {}s".format(time_expand))
-
-        # +++++ Resize to 1000*1000 +++++
-        # predict: tensor([0], device='cuda:0')
-        # time used on one image: 0.6052532196044922
-
-        # model path: result5/resnet34_..._E4
-        # predict: tensor([0], device='cuda:0')
-        # time used on one image: 0.37607359886169434
-        # just time used on predict
-        # ------------------------
-        # predict: tensor([0], device='cuda:0')
-        # time used on one image: 0.4475886821746826
-        # timed used on the whole process
-
-        # model path: result7/resnet18...E4
-        # predict: tensor([0], device='cuda:0')
-        # time used on one image: 0.3287224769592285s
-
-        # model path: result3/resnet34_..._E7
-        # time used on one image: 0.4780392646789551s
-        # just time used on predict
-
-        # +++++ Use the original size +++++
-        # predict: tensor([2], device='cuda:0')
-        # Time used on one image completely: 0.64734 s
-
-    # def get_error(self, pre, lbl):
-    #     acc = torch.sum(pre == lbl).item() / len(pre)
-    #     return 1 - acc
 
     def test_original_image(self):
         test_transform = ImageTestTransformOneRaw()
         correct_num = 0
         total = 0
-        for filename in os.listdir('/home/std2022/zhaoxu/disk/Bank/Images/'):
-            image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/'+filename).convert('RGB')
-            image, flag = test_transform(image)
-            # 输入模型
-            image = torch.unsqueeze(image,0)
-            image = image.to(self.device)
-            flag = flag.to(self.device)
-            # print(image.shape)
-            tis = time.time()
-            output = self.model(image)
-            pre = output.detach().max(1)[1]
-            time_expand = time.time() - tis
-            # print(flag)
-            # print(pre)
-            # 评估准确率
-            if pre == flag:
-                correct_num += 1
-            print("{} time used on the image: {:.4f}s".format(total,time_expand))
-            total += 1
+        time_all = 0
+        time_average = 0
+        data_frame = pd.read_csv('/home/std2022/zhaoxu/Document_angle/Data/Bank_Test.csv')
+        with torch.no_grad():
+            for index, row in data_frame.iterrows():
+            # for filename in os.listdir('/home/std2022/zhaoxu/disk/Bank/Images/'):
+            #     image = Image.open('/home/std2022/zhaoxu/disk/Bank/Images/'+filename).convert('RGB')
+            #     tis = time.time()
+                image = Image.open(row['image_path']).convert('RGB')
+                tis = time.time()
+                image, flag = test_transform(image)
+                # 输入模型
+                image = torch.unsqueeze(image,0)
+                image = image.to(self.device)
+                flag = flag.to(self.device)
+                # print(image.shape)
+                output = self.model(image)
+                pre = output.detach().max(1)[1]
+                time_expand = time.time() - tis
+                time_all += time_expand
 
-            if total == 500:
-                break
-            # torch.cuda.empty_cache()
-            # gc.collect()
-            #  CUDA out of memory.
+                # 评估准确率
+                if pre == flag:
+                    correct_num += 1
+                print("{} time used on the image: {:.4f}s".format(total,time_expand))
+                total += 1
 
         accuracy = correct_num/total
         accuracy = accuracy * 100
         print("Accuracy on the original image: {:.5f} %".format(accuracy))
-        # Accuracy on the original image: 75.20000 %
+        time_average = time_all/total
+        print("Average time on the original image: {:.4f}s".format(time_average))
+
+        # Accuracy on the original image: 76.02740 % (original size on all bank images, including train, val, test)
+        # Accuracy on the original image: 98.97260 % (resize all the bank images to 1000*1000, including train, val, test)
+        # 0 time used on the image: 0.8564s
+        # 1 time used on the image: 0.0106s
+        # 2 time used on the image: 0.0076s
+        # Accuracy on the original image: 97.93103 % (resize Bank_Test images to 1000*1000)
+        # Accuracy on the original image: 76.55172 % (original Ban_Test images)
+        # 0 time used on the image: 0.8884s
+        # 1 time used on the image: 0.0561s
+        # 2 time used on the image: 0.0683s
+        # 3 time used on the image: 0.0355s
+        # average: 0.04s (not including time used to load image) average: 0.08s (including image)
+
 
     def draw_figures(self):
         x = np.arange(0, len(self.list[0]), 1)
@@ -579,11 +564,11 @@ class ImageStep():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', default='/home/std2022/zhaoxu/')
-    parser.add_argument('--result-dir', default='disk/result/result3/')
-    parser.add_argument('--train-test', default='test', type=str, help='choose to train or test model')
+    parser.add_argument('--result-dir', default='disk/result/result11/')
+    parser.add_argument('--train-test', default='train', type=str, help='choose to train or test model')
     parser.add_argument('--model-name', default='resnet34', type=str, help='select the model')
     parser.add_argument('--start-epoch', default=0, type=int, help='whether to train the model from scratch')
-    parser.add_argument('--epoch-num', default=7, type=int, help='epoch numbers')  # 3
+    parser.add_argument('--epoch-num', default=4, type=int, help='epoch numbers')  # 3
     parser.add_argument('--opt', default='sgd', type=str, help='select the optimizer')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')  # 0.001
     parser.add_argument('--logspace', default=1, type=float, help='adjust learning rate, refer to def work_train()')
@@ -605,27 +590,27 @@ def main():
     trainer = ImageStep(args)
 
     # "train" indicates training model, while "test" indicates test_DNN
-    # if args.train_test == 'train':
-    #     # start_epoch ==0, train the model from scratch
-    #     if args.start_epoch == 0:
-    #         trainer.load_init_model()
-    #         trainer.load_data(dataset='bank_doc_train')
-    #         trainer.work_train(args)
-    #     else:
-    #         trainer.load_latest_epoch()
-    #         trainer.load_data(dataset='bank_doc_train')
-    #         trainer.work_train(args)
-    #
-    # elif args.train_test == 'test':
-    #     # Test the model on all dataset
-    #     trainer.load_trained_model()
-    #     trainer.load_data(dataset='bank_doc_train')
-    #     # trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
-    #     trainer.work_test_bank()  # test DNN on bank test dataset
+    if args.train_test == 'train':
+        # start_epoch ==0, train the model from scratch
+        if args.start_epoch == 0:
+            trainer.load_init_model()
+            trainer.load_data(dataset='bank_doc_train')
+            trainer.work_train(args)
+        else:
+            trainer.load_latest_epoch()
+            trainer.load_data(dataset='bank_doc_train')
+            trainer.work_train(args)
+
+    elif args.train_test == 'test':
+        # Test the model on all dataset
+        trainer.load_trained_model()
+        trainer.load_data(dataset='bank_doc_train')
+        # trainer.work_test_all()  # test DNN on all (bank and doc) test dataset
+        trainer.work_test_bank()  # test DNN on bank test dataset
 
     # Test the model on one image
-    trainer.model_one_GPU()
-    trainer.test_original_image()
+    # trainer.model_one_GPU()
+    # trainer.test_original_image()
     # tis = time.time()
     # trainer.test_one_image()
     # time_expand = time.time()-tis
